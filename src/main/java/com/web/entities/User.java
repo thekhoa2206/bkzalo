@@ -7,6 +7,9 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -26,19 +29,25 @@ public class User extends BaseEntity {
 
 	@Column(name = "avatar", length = 100, nullable = false)
 	private String avatar;
-	
+
 	// 1 user -> N posts
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user" /* tên property user trong class posts */
 			, fetch = FetchType.LAZY)
 	private List<Post> posts = new ArrayList<Post>();
-	
+
 	// 1 user -> N commments
-		@OneToMany(cascade = CascadeType.ALL, mappedBy = "user" /* tên property user trong class comment */
-				, fetch = FetchType.LAZY)
-		private List<Comment> comment = new ArrayList<Comment>();
-		
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user" /* tên property user trong class comment */
+			, fetch = FetchType.LAZY)
+	private List<Comment> comment = new ArrayList<Comment>();
+
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinTable(name = "tbl_likes_posts", joinColumns = @JoinColumn(name = "id_users"), inverseJoinColumns = @JoinColumn(name = "id_post"))
+	private List<Post> post = new ArrayList<Post>();
 	
-	
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinTable(name = "tbl_friends", joinColumns = @JoinColumn(name = "id_user_a"), inverseJoinColumns = @JoinColumn(name = "id_user_b"))
+	private List<User> user = new ArrayList<User>();
+
 	public String getPassword() {
 		return password;
 	}
@@ -85,6 +94,22 @@ public class User extends BaseEntity {
 
 	public void setComment(List<Comment> comment) {
 		this.comment = comment;
+	}
+
+	public List<Post> getPost() {
+		return post;
+	}
+
+	public void setPost(List<Post> post) {
+		this.post = post;
+	}
+
+	public List<User> getUser() {
+		return user;
+	}
+
+	public void setUser(List<User> user) {
+		this.user = user;
 	}
 
 }
