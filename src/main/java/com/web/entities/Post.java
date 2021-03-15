@@ -29,11 +29,11 @@ public class Post extends BaseEntity {
 	@JoinColumn(name = "user_id") // tên field khoá ngoại
 	private User user;
 
-	@ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, mappedBy = "post")
-	private List<User> users = new ArrayList<User>();
+//	@ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, mappedBy = "post")
+//	private List<User> users = new ArrayList<User>();
 	
-	@ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, mappedBy = "post")
-	private List<Comment> comment = new ArrayList<Comment>();
+//	@ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, mappedBy = "post")
+//	private List<Comment> comment = new ArrayList<Comment>();
 
 	public String getContent() {
 		return content;
@@ -67,20 +67,6 @@ public class Post extends BaseEntity {
 		this.user = user;
 	}
 
-	public List<User> getUsers() {
-		return users;
-	}
 
-	public void setUsers(List<User> users) {
-		this.users = users;
-	}
-
-	public List<Comment> getComment() {
-		return comment;
-	}
-
-	public void setComment(List<Comment> comment) {
-		this.comment = comment;
-	}
 
 }

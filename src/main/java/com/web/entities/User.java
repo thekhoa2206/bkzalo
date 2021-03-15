@@ -40,13 +40,13 @@ public class User extends BaseEntity {
 			, fetch = FetchType.LAZY)
 	private List<Comment> comment = new ArrayList<Comment>();
 
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	@JoinTable(name = "tbl_likes_posts", joinColumns = @JoinColumn(name = "id_users"), inverseJoinColumns = @JoinColumn(name = "id_post"))
-	private List<Post> post = new ArrayList<Post>();
-	
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	@JoinTable(name = "tbl_friends", joinColumns = @JoinColumn(name = "id_user_a"), inverseJoinColumns = @JoinColumn(name = "id_user_b"))
-	private List<User> user = new ArrayList<User>();
+//	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+//	@JoinTable(name = "tbl_likes_posts", joinColumns = @JoinColumn(name = "id_users"), inverseJoinColumns = @JoinColumn(name = "id_post"))
+//	private List<Post> post = new ArrayList<Post>();
+//	
+//	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+//	@JoinTable(name = "tbl_friends", joinColumns = @JoinColumn(name = "id_user_a"), inverseJoinColumns = @JoinColumn(name = "id_user_b"))
+//	private List<User> user = new ArrayList<User>();
 
 	public String getPassword() {
 		return password;
@@ -96,20 +96,5 @@ public class User extends BaseEntity {
 		this.comment = comment;
 	}
 
-	public List<Post> getPost() {
-		return post;
-	}
-
-	public void setPost(List<Post> post) {
-		this.post = post;
-	}
-
-	public List<User> getUser() {
-		return user;
-	}
-
-	public void setUser(List<User> user) {
-		this.user = user;
-	}
 
 }
