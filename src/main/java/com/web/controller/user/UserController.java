@@ -28,21 +28,21 @@ public class UserController extends BaseController {
 	public ResponseEntity<AjaxResponse> get_user_info(@PathVariable("id") int id, @RequestBody User data,
 			final ModelMap model, final HttpServletRequest request, final HttpServletResponse response) {
 		data = userService.findUserById(id);
-		return ResponseEntity.ok(new AjaxResponse(200, data));
+		return ResponseEntity.ok(new AjaxResponse(200,"OK" , data));
 	}
 
 	@RequestMapping(value = { "/edit_users/{id}" }, method = RequestMethod.GET)
 	public ResponseEntity<AjaxResponse> set_user_info(@PathVariable("id") int id, @RequestBody User data,
 			final ModelMap model, final HttpServletRequest request, final HttpServletResponse response) {
 		data = userService.findUserById(id);
-		return ResponseEntity.ok(new AjaxResponse(200, data));
+		return ResponseEntity.ok(new AjaxResponse(200,"OK", data));
 	}
 
 	@RequestMapping(value = { "/save_user" }, method = RequestMethod.POST)
 	public ResponseEntity<AjaxResponse> save_user(@RequestBody User data, final ModelMap model,
 			final HttpServletRequest request, final HttpServletResponse response) {
 		userRepo.save(data);
-		return ResponseEntity.ok(new AjaxResponse(200, data));
+		return ResponseEntity.ok(new AjaxResponse(200,"OK", data));
 	}
 	
 
