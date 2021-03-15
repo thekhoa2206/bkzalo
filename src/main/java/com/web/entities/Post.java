@@ -12,14 +12,14 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "tbl_posts")
-public class Post {
+public class Post extends BaseEntity {
 	@Column(name = "content", length = 1000, nullable = false)
 	private String content;
 	
 	@Column(name = "media", length = 100, nullable = false)
 	private String media;
 	
-	@Column(name = "created_date", nullable = true)
+	@Column(name = "create_date", nullable = true)
 	private LocalDateTime createdDate;
 	
 	

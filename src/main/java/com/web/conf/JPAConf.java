@@ -24,7 +24,7 @@ public class JPAConf {
         dataSourceConfig.setDriverClassName("com.mysql.cj.jdbc.Driver");
         dataSourceConfig.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/bkzalo?useUnicode=yes&characterEncoding=UTF-8");
         dataSourceConfig.setUsername("root");
-        dataSourceConfig.setPassword("123456");
+        dataSourceConfig.setPassword("root");
         return new HikariDataSource(dataSourceConfig);
     }
 	

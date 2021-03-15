@@ -8,11 +8,11 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "tbl_chat")
-public class Chat {
+public class Chat extends BaseEntity{
 	@Column(name = "content", length = 500, nullable = false)
 	private String content;
 	
-	@Column(name = "created_date", nullable = true)
+	@Column(name = "create_date", nullable = true)
 	private LocalDateTime createdDate;
 
 	public String getContent() {

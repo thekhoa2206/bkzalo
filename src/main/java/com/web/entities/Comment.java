@@ -11,11 +11,11 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "tbl_comment")
-public class Comment {
+public class Comment extends BaseEntity{
 	@Column(name = "content", length = 500, nullable = false)
 	private String content;
 	
-	@Column(name = "created_date", nullable = true)
+	@Column(name = "create_date", nullable = true)
 	private LocalDateTime createdDate;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
