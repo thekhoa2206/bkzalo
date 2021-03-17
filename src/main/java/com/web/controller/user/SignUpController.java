@@ -25,17 +25,10 @@ public class SignUpController {
 	@Autowired
 	UserService userService;
 
-	@GetMapping(value = { "/signup" }, produces = "application/json")
-	public User signup(@RequestBody User data, final ModelMap model, final HttpServletRequest request, final HttpServletResponse response)
-			throws Exception {
-		
-		return data;
-	}
-	@PostMapping(value = { "/save-guestUser" }, produces = "application/json")
+	@PostMapping(value = { "/signup" }, produces = "application/json")
 	public ResponseEntity<AjaxResponse> saveGuestUser(@RequestBody User data, final ModelMap model, final HttpServletRequest request, final HttpServletResponse response)
 			throws Exception {
-		
 		userService.saveGuestUser(data);
-		return ResponseEntity.ok(new AjaxResponse(200,"OK" , data));
+		return ResponseEntity.ok(new AjaxResponse(200,"Sign Up success!!" , data));
 	}
 }
