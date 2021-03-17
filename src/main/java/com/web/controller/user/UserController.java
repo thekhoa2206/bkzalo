@@ -6,7 +6,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -24,25 +26,24 @@ public class UserController extends BaseController {
 	@Autowired
 	public UserService userService;
 
-	@RequestMapping(value = { "/users" }, method = RequestMethod.GET)
+	@GetMapping(value = { "/get_user_info/{id}" }, produces = "application/json")
 	public ResponseEntity<AjaxResponse> get_user_info(@PathVariable("id") int id, @RequestBody User data,
 			final ModelMap model, final HttpServletRequest request, final HttpServletResponse response) {
 		data = userService.findUserById(id);
-		return ResponseEntity.ok(new AjaxResponse(200,"OK" , data));
+		return ResponseEntity.ok(new AjaxResponse(200,"Success!", data));
 	}
 
-	@RequestMapping(value = { "/edit_users/{id}" }, method = RequestMethod.GET)
-	public ResponseEntity<AjaxResponse> set_user_info(@PathVariable("id") int id, @RequestBody User data,
-			final ModelMap model, final HttpServletRequest request, final HttpServletResponse response) {
-		data = userService.findUserById(id);
-		return ResponseEntity.ok(new AjaxResponse(200,"OK", data));
-	}
-
-	@RequestMapping(value = { "/save_user" }, method = RequestMethod.POST)
-	public ResponseEntity<AjaxResponse> save_user(@RequestBody User data, final ModelMap model,
+	@PostMapping(value = { "/set_user_info/{id}" }, produces = "application/json")
+	public ResponseEntity<AjaxResponse> set_user_info(@PathVariable("id") int id, @RequestBody User data, final ModelMap model,
 			final HttpServletRequest request, final HttpServletResponse response) {
-		userRepo.save(data);
-		return ResponseEntity.ok(new AjaxResponse(200,"OK", data));
+		data.setId(id);
+		try {
+			userService.saveUser(data);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return ResponseEntity.ok(new AjaxResponse(200,"Success!", data));
 	}
 	
 
