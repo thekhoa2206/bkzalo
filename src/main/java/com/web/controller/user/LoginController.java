@@ -36,7 +36,8 @@ public class LoginController {
 
 	@GetMapping(value = { "/logout" }, produces = "application/json")
 	public ResponseEntity<AjaxResponse> logout(@RequestBody User data, final ModelMap model,
-			final HttpServletRequest request, final HttpServletResponse response) throws Exception {		
+			final HttpServletRequest request, final HttpServletResponse response)
+			throws Exception {
 		return ResponseEntity.ok(new AjaxResponse(200, "Logout success!!", data));
 	}
 
