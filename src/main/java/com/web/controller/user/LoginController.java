@@ -19,20 +19,25 @@ import com.web.services.UserService;
 public class LoginController {
 	@Autowired
 	UserService userService;
-	
+
 	@PostMapping(value = { "/login" }, produces = "application/json")
-	public ResponseEntity<AjaxResponse> login(@RequestBody User data, final ModelMap model, final HttpServletRequest request, final HttpServletResponse response)
-			throws Exception {
+	public ResponseEntity<AjaxResponse> login(@RequestBody User data, final ModelMap model,
+			final HttpServletRequest request, final HttpServletResponse response) throws Exception {
 		String phone = data.getPhone();
-		if(userService.finUserByPhone(phone).getPassword().compareTo(data.getPassword())== 0) {
+		if (userService.finUserByPhone(phone).getPassword().compareTo(data.getPassword()) == 0) {
 			data = userService.finUserByPhone(phone);
-			return ResponseEntity.ok(new AjaxResponse(200,"Login success!!" , data));
+			return ResponseEntity.ok(new AjaxResponse(200, "Login success!!", data));
 		} else {
 			data.setPassword(null);
 			data.setPhone(null);
-			return ResponseEntity.ok(new AjaxResponse(200,"Login fail!!" , data));
+			return ResponseEntity.ok(new AjaxResponse(200, "Login fail!!", data));
 		}
-		
-		
 	}
+
+	@GetMapping(value = { "/logout" }, produces = "application/json")
+	public ResponseEntity<AjaxResponse> logout(@RequestBody User data, final ModelMap model,
+			final HttpServletRequest request, final HttpServletResponse response) throws Exception {		
+		return ResponseEntity.ok(new AjaxResponse(200, "Logout success!!", data));
+	}
+
 }
