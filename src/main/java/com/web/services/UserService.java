@@ -11,21 +11,26 @@ import org.springframework.stereotype.Service;
 import com.web.entities.User;
 import com.web.repositories.UserRepo;
 
-
 @Service
 public class UserService {
 	@PersistenceContext
 	protected EntityManager entityManager;
 	@Autowired
 	public UserRepo userRepo;
-	
+
 	public User findUserById(final int id) {
 
 		String sql = "select * from tbl_users where id = '" + id + "'";
 		Query query = entityManager.createNativeQuery(sql, User.class);
 		return (User) query.getSingleResult();
 	}
-	
+
+	public User finUserByPhone(final String phone) {
+		String sql = "select * from tbl_users where phone = '" + phone + "'";
+		Query query = entityManager.createNativeQuery(sql, User.class);
+		return (User) query.getSingleResult();
+	}
+
 	@Transactional(rollbackOn = Exception.class)
 	public void saveGuestUser(User user) throws Exception {
 		try {
