@@ -108,10 +108,9 @@ DROP TABLE IF EXISTS `tbl_comment_post`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `tbl_comment_post` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `id_post` int DEFAULT NULL,
-  `id_comment` int DEFAULT NULL,
-  PRIMARY KEY (`id`),
+  `id_post` int NOT NULL,
+  `id_comment` int NOT NULL,
+  PRIMARY KEY (`id_post`,`id_comment`),
   KEY `tbl_comment_post_user_idx` (`id_comment`),
   KEY `tbl_comment_post_idx` (`id_post`),
   CONSTRAINT `id_comment` FOREIGN KEY (`id_comment`) REFERENCES `tbl_comment` (`id`),
@@ -136,10 +135,9 @@ DROP TABLE IF EXISTS `tbl_friends`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `tbl_friends` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `id_user_a` int DEFAULT NULL,
-  `id_user_b` int DEFAULT NULL,
-  PRIMARY KEY (`id`),
+  `id_user_a` int NOT NULL,
+  `id_user_b` int NOT NULL,
+  PRIMARY KEY (`id_user_a`,`id_user_b`),
   KEY `id_friends_user_idx` (`id_user_a`),
   KEY `id_friends_user_2_idx` (`id_user_b`),
   CONSTRAINT `id_friends_user` FOREIGN KEY (`id_user_a`) REFERENCES `tbl_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -164,10 +162,9 @@ DROP TABLE IF EXISTS `tbl_likes_posts`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `tbl_likes_posts` (
-  `id` int NOT NULL,
-  `id_post` int DEFAULT NULL,
-  `id_users` int DEFAULT NULL,
-  PRIMARY KEY (`id`),
+  `id_post` int NOT NULL,
+  `id_users` int NOT NULL,
+  PRIMARY KEY (`id_post`,`id_users`),
   KEY `id_like_post_user_idx` (`id_users`),
   KEY `id_like_post_user_2_idx` (`id_post`),
   CONSTRAINT `id_like_post_user` FOREIGN KEY (`id_users`) REFERENCES `tbl_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -256,4 +253,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-03-15  0:29:57
+-- Dump completed on 2021-03-15 14:40:22

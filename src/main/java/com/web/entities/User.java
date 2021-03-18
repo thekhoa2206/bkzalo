@@ -10,7 +10,6 @@ import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-
 @Entity
 @Table(name = "tbl_users")
 public class User extends BaseEntity {
@@ -26,19 +25,16 @@ public class User extends BaseEntity {
 
 	@Column(name = "avatar", length = 100, nullable = false)
 	private String avatar;
-	
+
 	// 1 user -> N posts
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user" /* tên property user trong class posts */
 			, fetch = FetchType.LAZY)
-	private List<Post> posts = new ArrayList<Post>();
-	
-	// 1 user -> N commments
-		@OneToMany(cascade = CascadeType.ALL, mappedBy = "user" /* tên property user trong class comment */
-				, fetch = FetchType.LAZY)
-		private List<Comment> comment = new ArrayList<Comment>();
-		
-	
-	
+	private List<Post> post = new ArrayList<Post>();
+
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user" /* tên property user trong class comment */
+			, fetch = FetchType.LAZY)
+	private List<Comment> comment = new ArrayList<Comment>();
+
 	public String getPassword() {
 		return password;
 	}
@@ -71,20 +67,6 @@ public class User extends BaseEntity {
 		this.avatar = avatar;
 	}
 
-	public List<Post> getPosts() {
-		return posts;
-	}
 
-	public void setPosts(List<Post> posts) {
-		this.posts = posts;
-	}
-
-	public List<Comment> getComment() {
-		return comment;
-	}
-
-	public void setComment(List<Comment> comment) {
-		this.comment = comment;
-	}
 
 }

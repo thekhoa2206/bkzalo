@@ -24,4 +24,8 @@ public class UserService {
 		Query query = entityManager.createNativeQuery(sql, User.class);
 		return (User) query.getSingleResult();
 	}
+	
+//	public FakeUser convertUserToFakeUser(User user) {
+//		return new FakeUser(user);
+//	}
 }

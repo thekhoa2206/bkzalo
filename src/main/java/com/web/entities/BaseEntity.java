@@ -8,10 +8,10 @@ import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
 public class BaseEntity {
-	@Id // xác định đây là khoá chính.
-	@GeneratedValue(strategy = GenerationType.IDENTITY) // auto-increment.
+	@Id  
+	@GeneratedValue(strategy = GenerationType.IDENTITY)  
 	@Column(name = "id")
-	private Integer id; // primary-key
+	private Integer id; 
 
 	public Integer getId() {
 		return id;
