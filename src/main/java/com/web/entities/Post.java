@@ -9,6 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -18,22 +19,39 @@ import javax.persistence.Table;
 public class Post extends BaseEntity {
 	@Column(name = "content", length = 1000, nullable = true)
 	private String content;
+<<<<<<< HEAD
 	
 	@Column(name = "media", length = 100, nullable = true)
+=======
+
+	@Column(name = "media", length = 100, nullable = false)
+>>>>>>> 59ce72850f9e23457adeb21f36afae4fef697298
 	private String media;
-	
+
 	@Column(name = "create_date", nullable = true)
 	private LocalDateTime createdDate;
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> 59ce72850f9e23457adeb21f36afae4fef697298
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "user_id")
 	private User user;
+
+//	@ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, mappedBy = "post")
+//	private List<User> users = new ArrayList<User>();
 	
+<<<<<<< HEAD
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "post"/* tên property product trong class ProductImages */
 			, fetch = FetchType.EAGER, orphanRemoval = true)
 
 	private List<PostImgaes> postImages = new ArrayList<PostImgaes>();
+=======
+//	@ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, mappedBy = "post")
+//	private List<Comment> comment = new ArrayList<Comment>();
+>>>>>>> 59ce72850f9e23457adeb21f36afae4fef697298
 
 	public String getContent() {
 		return content;
@@ -67,4 +85,9 @@ public class Post extends BaseEntity {
 		this.user = user;
 	}
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 59ce72850f9e23457adeb21f36afae4fef697298
 }
