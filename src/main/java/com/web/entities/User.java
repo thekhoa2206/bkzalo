@@ -32,20 +32,13 @@ public class User extends BaseEntity {
 	// 1 user -> N posts
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user" /* tên property user trong class posts */
 			, fetch = FetchType.LAZY)
-<<<<<<< HEAD
 	private List<Post> post = new ArrayList<Post>();
 
-=======
-	private List<Post> posts = new ArrayList<Post>();
-
 	// 1 user -> N commments
->>>>>>> 59ce72850f9e23457adeb21f36afae4fef697298
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user" /* tên property user trong class comment */
 			, fetch = FetchType.LAZY)
 	private List<Comment> comment = new ArrayList<Comment>();
 
-<<<<<<< HEAD
-=======
 //	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 //	@JoinTable(name = "tbl_likes_posts", joinColumns = @JoinColumn(name = "id_users"), inverseJoinColumns = @JoinColumn(name = "id_post"))
 //	private List<Post> post = new ArrayList<Post>();
@@ -54,7 +47,6 @@ public class User extends BaseEntity {
 //	@JoinTable(name = "tbl_friends", joinColumns = @JoinColumn(name = "id_user_a"), inverseJoinColumns = @JoinColumn(name = "id_user_b"))
 //	private List<User> user = new ArrayList<User>();
 
->>>>>>> 59ce72850f9e23457adeb21f36afae4fef697298
 	public String getPassword() {
 		return password;
 	}
@@ -86,8 +78,5 @@ public class User extends BaseEntity {
 	public void setAvatar(String avatar) {
 		this.avatar = avatar;
 	}
-
-
-
 
 }

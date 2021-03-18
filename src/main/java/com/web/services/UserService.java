@@ -1,7 +1,5 @@
 package com.web.services;
 
-import java.io.File;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -9,7 +7,6 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.web.entities.User;
 import com.web.repositories.UserRepo;
@@ -27,12 +24,7 @@ public class UserService {
 		Query query = entityManager.createNativeQuery(sql, User.class);
 		return (User) query.getSingleResult();
 	}
-<<<<<<< HEAD
-	
-//	public FakeUser convertUserToFakeUser(User user) {
-//		return new FakeUser(user);
-//	}
-=======
+
 
 	public User finUserByPhone(final String phone) {
 		String sql = "select * from tbl_users where phone = '" + phone + "'";
@@ -62,5 +54,4 @@ public class UserService {
 			throw e;
 		}
 	}
->>>>>>> 59ce72850f9e23457adeb21f36afae4fef697298
 }
