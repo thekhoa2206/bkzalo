@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -56,6 +57,18 @@ public class PutPostController {
 			final HttpServletResponse response) {
 		List<Post> PostData = postService.findAllPostUser();
 		return ResponseEntity.ok(new AjaxResponse(200, "SUCCESSFULLY", PostData));
+	}
+//	Edit post -> Chưa làm được user nào xóa bài của user đấy -> thêm tbl-users.id
+	@PostMapping(value = { "/update_post_info/{id}" }, produces = "application/json")
+	public ResponseEntity<AjaxResponse> update_post_info(@PathVariable("id") int id, @RequestBody Post postData, final ModelMap model,
+			final HttpServletRequest request, final HttpServletResponse response) {
+		postData.setId(id);
+		try {
+			postService.savePost(postData);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return ResponseEntity.ok(new AjaxResponse(200,"update-successfully", postData));
 	}
 
 //	Xóa bài viết -> Nhưng chưa làm đc của user nào xóa bài của user đấy -> Lấy cả tbl-posts.id và tbl-user.id

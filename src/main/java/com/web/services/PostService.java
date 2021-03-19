@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,5 +47,18 @@ public class PostService {
 				+ searchSomethings.getKeyword() + "%'";
 		Query query = entityManager.createQuery(jpql, Post.class);
 		return query.getResultList();
+	}
+	@Transactional(rollbackOn = Exception.class)
+	public void savePost(Post post) throws Exception {
+		try {
+			if (post.getId() != null) { // chỉnh sửa
+				// lấy dữ liệu cũ của sản phẩm
+				Post postInDb = postRepo.findById(post.getId()).get();
+
+			}
+			postRepo.save(post);
+		} catch (Exception e) {
+			throw e;
+		}
 	}
 }
