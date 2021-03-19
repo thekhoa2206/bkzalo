@@ -13,7 +13,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-
 @Entity
 @Table(name = "tbl_users")
 public class User extends BaseEntity {
@@ -33,7 +32,7 @@ public class User extends BaseEntity {
 	// 1 user -> N posts
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user" /* tên property user trong class posts */
 			, fetch = FetchType.LAZY)
-	private List<Post> posts = new ArrayList<Post>();
+	private List<Post> post = new ArrayList<Post>();
 
 	// 1 user -> N commments
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user" /* tên property user trong class comment */
@@ -80,5 +79,8 @@ public class User extends BaseEntity {
 		this.avatar = avatar;
 	}
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ddcc72f034452c79ad6d61a8dfdd7bb6d4e89026
 }

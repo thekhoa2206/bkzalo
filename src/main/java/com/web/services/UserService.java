@@ -1,8 +1,11 @@
 package com.web.services;
 
+<<<<<<< HEAD
 import java.io.File;
 import java.util.List;
 
+=======
+>>>>>>> ddcc72f034452c79ad6d61a8dfdd7bb6d4e89026
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -10,7 +13,6 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.web.entities.Comment;
 import com.web.entities.Post;
@@ -30,6 +32,7 @@ public class UserService {
 		Query query = entityManager.createNativeQuery(sql, User.class);
 		return (User) query.getSingleResult();
 	}
+
 
 	public User finUserByPhone(final String phone) {
 		String sql = "select * from tbl_users where phone = '" + phone + "'";

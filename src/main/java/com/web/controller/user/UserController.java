@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.web.entities.AjaxResponse;
@@ -26,6 +24,7 @@ public class UserController extends BaseController {
 	@Autowired
 	public UserService userService;
 
+//	Lấy thông tin User
 	@GetMapping(value = { "/get_user_info/{id}" }, produces = "application/json")
 	public ResponseEntity<AjaxResponse> get_user_info(@PathVariable("id") int id, @RequestBody User data,
 			final ModelMap model, final HttpServletRequest request, final HttpServletResponse response) {
@@ -33,6 +32,7 @@ public class UserController extends BaseController {
 		return ResponseEntity.ok(new AjaxResponse(200,"Success!", data));
 	}
 
+//	Sửa thông tin của user
 	@PostMapping(value = { "/set_user_info/{id}" }, produces = "application/json")
 	public ResponseEntity<AjaxResponse> set_user_info(@PathVariable("id") int id, @RequestBody User data, final ModelMap model,
 			final HttpServletRequest request, final HttpServletResponse response) {
@@ -40,7 +40,6 @@ public class UserController extends BaseController {
 		try {
 			userService.saveUser(data);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return ResponseEntity.ok(new AjaxResponse(200,"Success!", data));

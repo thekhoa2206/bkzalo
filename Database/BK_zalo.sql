@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.20, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.23, for Win64 (x86_64)
 --
--- Host: 127.0.0.1    Database: bkzalo
+-- Host: localhost    Database: bkzalo
 -- ------------------------------------------------------
--- Server version	8.0.20
+-- Server version	8.0.23
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -108,14 +108,13 @@ DROP TABLE IF EXISTS `tbl_comment_post`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `tbl_comment_post` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `id_post` int DEFAULT NULL,
-  `id_comment` int DEFAULT NULL,
-  PRIMARY KEY (`id`),
+  `id_post` int NOT NULL,
+  `id_comment` int NOT NULL,
+  PRIMARY KEY (`id_post`,`id_comment`),
   KEY `tbl_comment_post_user_idx` (`id_comment`),
   KEY `tbl_comment_post_idx` (`id_post`),
   CONSTRAINT `id_comment` FOREIGN KEY (`id_comment`) REFERENCES `tbl_comment` (`id`),
-  CONSTRAINT `id_comment_post` FOREIGN KEY (`id_post`) REFERENCES `tbl_posts` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `id_post` FOREIGN KEY (`id_post`) REFERENCES `tbl_posts` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -136,10 +135,9 @@ DROP TABLE IF EXISTS `tbl_friends`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `tbl_friends` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `id_user_a` int DEFAULT NULL,
-  `id_user_b` int DEFAULT NULL,
-  PRIMARY KEY (`id`),
+  `id_user_a` int NOT NULL,
+  `id_user_b` int NOT NULL,
+  PRIMARY KEY (`id_user_a`,`id_user_b`),
   KEY `id_friends_user_idx` (`id_user_a`),
   KEY `id_friends_user_2_idx` (`id_user_b`),
   CONSTRAINT `id_friends_user` FOREIGN KEY (`id_user_a`) REFERENCES `tbl_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -164,14 +162,13 @@ DROP TABLE IF EXISTS `tbl_likes_posts`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `tbl_likes_posts` (
-  `id` int NOT NULL,
-  `id_post` int DEFAULT NULL,
-  `id_users` int DEFAULT NULL,
-  PRIMARY KEY (`id`),
+  `id_post` int NOT NULL,
+  `id_users` int NOT NULL,
+  PRIMARY KEY (`id_post`,`id_users`),
   KEY `id_like_post_user_idx` (`id_users`),
   KEY `id_like_post_user_2_idx` (`id_post`),
   CONSTRAINT `id_like_post_user` FOREIGN KEY (`id_users`) REFERENCES `tbl_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `id_like_post_user_2` FOREIGN KEY (`id_post`) REFERENCES `tbl_posts` (`id`)
+  CONSTRAINT `id_like_post_user_2` FOREIGN KEY (`id_post`) REFERENCES `tbl_posts` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -192,7 +189,7 @@ DROP TABLE IF EXISTS `tbl_posts`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `tbl_posts` (
-  `id` int NOT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
   `user_id` int DEFAULT NULL,
   `content` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
   `media` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
@@ -200,7 +197,7 @@ CREATE TABLE `tbl_posts` (
   PRIMARY KEY (`id`),
   KEY `id_user_post_idx` (`user_id`),
   CONSTRAINT `id_user_post` FOREIGN KEY (`user_id`) REFERENCES `tbl_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -209,7 +206,33 @@ CREATE TABLE `tbl_posts` (
 
 LOCK TABLES `tbl_posts` WRITE;
 /*!40000 ALTER TABLE `tbl_posts` DISABLE KEYS */;
+INSERT INTO `tbl_posts` VALUES (7,1,'Khoa','Hieu',NULL);
 /*!40000 ALTER TABLE `tbl_posts` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tbl_posts_images`
+--
+
+DROP TABLE IF EXISTS `tbl_posts_images`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tbl_posts_images` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `post_id` int DEFAULT NULL,
+  `content` varchar(45) DEFAULT NULL,
+  `path` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tbl_posts_images`
+--
+
+LOCK TABLES `tbl_posts_images` WRITE;
+/*!40000 ALTER TABLE `tbl_posts_images` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tbl_posts_images` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -221,10 +244,10 @@ DROP TABLE IF EXISTS `tbl_users`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `tbl_users` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `phone` varchar(45) COLLATE utf8mb4_bin DEFAULT NULL,
-  `password` varchar(100) COLLATE utf8mb4_bin DEFAULT NULL,
+  `phone` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  `password` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
   `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `avatar` varchar(100) COLLATE utf8mb4_bin DEFAULT NULL,
+  `avatar` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -238,14 +261,6 @@ LOCK TABLES `tbl_users` WRITE;
 INSERT INTO `tbl_users` VALUES (1,'092872121','12334','nguyenvan','avatar.img'),(2,'092872121','12334','nguyenvan','avatar.img'),(3,'092872121','1233432322','nguyenvan','avatar.img');
 /*!40000 ALTER TABLE `tbl_users` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Dumping events for database 'bkzalo'
---
-
---
--- Dumping routines for database 'bkzalo'
---
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -256,4 +271,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-03-15  0:29:57
+-- Dump completed on 2021-03-18 17:57:20
