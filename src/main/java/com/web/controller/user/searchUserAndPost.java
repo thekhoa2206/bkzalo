@@ -29,13 +29,15 @@ public class searchUserAndPost {
 	@Autowired
 	public UserService userService;
 
+//	Tìm kiếm keywords theo tên post
 	@RequestMapping(value = { "/seachSomethingOfPost" }, method = RequestMethod.GET)
-	public ResponseEntity<AjaxResponse> see_post_user(@RequestBody String keyword, final ModelMap model,
+	public ResponseEntity<AjaxResponse> search_post(@RequestBody String keyword, final ModelMap model,
 			final HttpServletRequest request, final HttpServletResponse response) {
 		SearchSomethings searchSomethings = new SearchSomethings();
 		searchSomethings.setKeyword(keyword);
 		List<Post> postData = postService.search(searchSomethings);
 		return ResponseEntity.ok(new AjaxResponse(200, "OK", postData));
 	}
+//	Tìm kiếm theo tên user
 
 }

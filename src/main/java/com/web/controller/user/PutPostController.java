@@ -29,6 +29,7 @@ public class PutPostController {
 	@Autowired
 	public UserService userService;
 
+//	User đăng bài
 	@RequestMapping(value = { "/user/{id_user}/put_post" }, method = RequestMethod.POST)
 	public ResponseEntity<AjaxResponse> Put_Post(@PathVariable("id_user") int id_user, @RequestBody Post postData,
 			final ModelMap model, final HttpServletRequest request, final HttpServletResponse response) {
@@ -41,7 +42,7 @@ public class PutPostController {
 		postRepo.save(post);
 		return ResponseEntity.ok(new AjaxResponse(200, "Post Status successful", postData));
 	}
-
+//Tìm bài viết của user (riêng từng bài )
 	@RequestMapping(value = { "/see_user_post/{id}" }, method = RequestMethod.GET)
 	public ResponseEntity<AjaxResponse> see_post_user(@PathVariable("id") int id, @RequestBody Post PostData,
 			final ModelMap model, final HttpServletRequest request, final HttpServletResponse response) {
@@ -49,6 +50,7 @@ public class PutPostController {
 		return ResponseEntity.ok(new AjaxResponse(200, "OK", PostData));
 	}
 
+//	Xem tất cả bài viết của tất cả user
 	@RequestMapping(value = { "/see_allPost" }, method = RequestMethod.GET)
 	public ResponseEntity<AjaxResponse> see_allPost(final ModelMap model, final HttpServletRequest request,
 			final HttpServletResponse response) {
@@ -56,6 +58,7 @@ public class PutPostController {
 		return ResponseEntity.ok(new AjaxResponse(200, "SUCCESSFULLY", PostData));
 	}
 
+//	Xóa bài viết -> Nhưng chưa làm đc của user nào xóa bài của user đấy -> Lấy cả tbl-posts.id và tbl-user.id
 	@RequestMapping(value = { "/delete_user_post/user/{id}" }, method = RequestMethod.DELETE)
 	public ResponseEntity<AjaxResponse> delete_post_user(@PathVariable("id") int id, final ModelMap model,
 			final HttpServletRequest request, final HttpServletResponse response) {
