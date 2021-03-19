@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import com.web.common.SearchSomethings;
 import com.web.entities.Post;
 import com.web.repositories.PostRepo;
 
@@ -21,9 +22,6 @@ public class PostService {
 	@PersistenceContext
 	protected EntityManager entityManager;
 
-//	public List<Post> findAll() {
-//		return this.postRepo.findAll();
-//	}
 	public Post findPostById(final int id) {
 
 		String sql = "select * from tbl_posts where id = '" + id + "'";
@@ -41,4 +39,12 @@ public class PostService {
 		postRepo.deleteById(id);
 	}
 
+	@SuppressWarnings("unchecked")
+	public List<Post> search(final SearchSomethings searchSomethings) {
+
+		String jpql = "Select p from Post p where CONCAT(p.content,' ', p.media) LIKE '%"
+				+ searchSomethings.getKeyword() + "%'";
+		Query query = entityManager.createQuery(jpql, Post.class);
+		return query.getResultList();
+	}
 }
