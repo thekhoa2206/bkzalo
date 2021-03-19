@@ -80,21 +80,5 @@ public class User extends BaseEntity {
 		this.avatar = avatar;
 	}
 
-	public List<Post> getPosts() {
-		return posts;
-	}
-
-	public void setPosts(List<Post> posts) {
-		this.posts = posts;
-	}
-
-	public List<Comment> getComment() {
-		return comment;
-	}
-
-	public void setComment(List<Comment> comment) {
-		this.comment = comment;
-	}
-
 
 }

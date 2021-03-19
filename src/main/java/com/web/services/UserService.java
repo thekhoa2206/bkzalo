@@ -1,6 +1,7 @@
 package com.web.services;
 
 import java.io.File;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -11,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.web.entities.Comment;
+import com.web.entities.Post;
 import com.web.entities.User;
 import com.web.repositories.UserRepo;
 
@@ -32,6 +35,12 @@ public class UserService {
 		String sql = "select * from tbl_users where phone = '" + phone + "'";
 		Query query = entityManager.createNativeQuery(sql, User.class);
 		return (User) query.getSingleResult();
+	}
+
+	public List<Post> findPostById(final int id) {
+		String sql = "select * from tbl_posts where id = '" + id + "'";
+		Query query = entityManager.createNativeQuery(sql, Post.class);
+		return query.getResultList();
 	}
 
 	@Transactional(rollbackOn = Exception.class)

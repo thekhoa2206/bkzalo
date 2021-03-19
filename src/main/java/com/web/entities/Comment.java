@@ -16,13 +16,14 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "tbl_comment")
-public class Comment extends BaseEntity{
+public class Comment extends BaseEntity {
+
 	@Column(name = "content", length = 500, nullable = false)
 	private String content;
-	
+
 	@Column(name = "create_date", nullable = true)
 	private LocalDateTime createdDate;
-	
+
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "user_id") // tên field khoá ngoại
 	private User user;
@@ -30,7 +31,7 @@ public class Comment extends BaseEntity{
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinTable(name = "tbl_comment_post", joinColumns = @JoinColumn(name = "id_comment"), inverseJoinColumns = @JoinColumn(name = "id_post"))
 	private List<Post> post = new ArrayList<Post>();
-	
+
 	public String getContent() {
 		return content;
 	}
@@ -62,6 +63,5 @@ public class Comment extends BaseEntity{
 	public void setPost(List<Post> post) {
 		this.post = post;
 	}
-	
-	
+
 }
