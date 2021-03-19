@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,7 +32,7 @@ public class PutPostController {
 	public UserService userService;
 
 //	User đăng bài
-	@RequestMapping(value = { "/user/{id_user}/put_post" }, method = RequestMethod.POST)
+	@PostMapping(value = { "/user/{id_user}/put_post" }, produces = "application/json")
 	public ResponseEntity<AjaxResponse> Put_Post(@PathVariable("id_user") int id_user, @RequestBody Post postData,
 			final ModelMap model, final HttpServletRequest request, final HttpServletResponse response) {
 		String content = String.valueOf(postData.getContent());
@@ -43,8 +44,9 @@ public class PutPostController {
 		postRepo.save(post);
 		return ResponseEntity.ok(new AjaxResponse(200, "Post Status successful", postData));
 	}
-//Tìm bài viết của user (riêng từng bài )
-	@RequestMapping(value = { "/see_user_post/{id}" }, method = RequestMethod.GET)
+
+//  Tìm bài viết của user (riêng từng bài )
+	@GetMapping(value = { "/see_user_post/{id}" }, produces = "application/json")
 	public ResponseEntity<AjaxResponse> see_post_user(@PathVariable("id") int id, @RequestBody Post PostData,
 			final ModelMap model, final HttpServletRequest request, final HttpServletResponse response) {
 		PostData = postService.findPostById(id);
@@ -52,27 +54,28 @@ public class PutPostController {
 	}
 
 //	Xem tất cả bài viết của tất cả user
-	@RequestMapping(value = { "/see_allPost" }, method = RequestMethod.GET)
+	@GetMapping(value = { "/see_allPost" }, produces = "application/json")
 	public ResponseEntity<AjaxResponse> see_allPost(final ModelMap model, final HttpServletRequest request,
 			final HttpServletResponse response) {
 		List<Post> PostData = postService.findAllPostUser();
 		return ResponseEntity.ok(new AjaxResponse(200, "SUCCESSFULLY", PostData));
 	}
+
 //	Edit post -> Chưa làm được user nào xóa bài của user đấy -> thêm tbl-users.id
 	@PostMapping(value = { "/update_post_info/{id}" }, produces = "application/json")
-	public ResponseEntity<AjaxResponse> update_post_info(@PathVariable("id") int id, @RequestBody Post postData, final ModelMap model,
-			final HttpServletRequest request, final HttpServletResponse response) {
+	public ResponseEntity<AjaxResponse> update_post_info(@PathVariable("id") int id, @RequestBody Post postData,
+			final ModelMap model, final HttpServletRequest request, final HttpServletResponse response) {
 		postData.setId(id);
 		try {
 			postService.savePost(postData);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return ResponseEntity.ok(new AjaxResponse(200,"update-successfully", postData));
+		return ResponseEntity.ok(new AjaxResponse(200, "update successfully", postData));
 	}
 
 //	Xóa bài viết -> Nhưng chưa làm đc của user nào xóa bài của user đấy -> Lấy cả tbl-posts.id và tbl-user.id
-	@RequestMapping(value = { "/delete_user_post/user/{id}" }, method = RequestMethod.DELETE)
+	@GetMapping(value = { "/delete_user_post/user/{id}" }, produces = "application/json")
 	public ResponseEntity<AjaxResponse> delete_post_user(@PathVariable("id") int id, final ModelMap model,
 			final HttpServletRequest request, final HttpServletResponse response) {
 		postService.deletePostById(id);
