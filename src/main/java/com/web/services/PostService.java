@@ -24,7 +24,6 @@ public class PostService {
 	protected EntityManager entityManager;
 
 	public Post findPostById(final int id) {
-
 		String sql = "select * from tbl_posts where id = '" + id + "'";
 		Query query = entityManager.createNativeQuery(sql, Post.class);
 		return (Post) query.getSingleResult();
@@ -48,6 +47,7 @@ public class PostService {
 		Query query = entityManager.createQuery(jpql, Post.class);
 		return query.getResultList();
 	}
+
 	@Transactional(rollbackOn = Exception.class)
 	public void savePost(Post post) throws Exception {
 		try {

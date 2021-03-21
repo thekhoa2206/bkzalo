@@ -39,10 +39,9 @@ public class User extends BaseEntity {
 			, fetch = FetchType.LAZY)
 	private List<Comment> comment = new ArrayList<Comment>();
 
-//	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-//	@JoinTable(name = "tbl_likes_posts", joinColumns = @JoinColumn(name = "id_users"), inverseJoinColumns = @JoinColumn(name = "id_post"))
-//	private List<Post> post = new ArrayList<Post>();
-//	
+	@ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, mappedBy = "like")
+	private List<Post> like = new ArrayList<Post>();
+
 //	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 //	@JoinTable(name = "tbl_friends", joinColumns = @JoinColumn(name = "id_user_a"), inverseJoinColumns = @JoinColumn(name = "id_user_b"))
 //	private List<User> user = new ArrayList<User>();
@@ -79,8 +78,4 @@ public class User extends BaseEntity {
 		this.avatar = avatar;
 	}
 
-<<<<<<< HEAD
-
-=======
->>>>>>> ddcc72f034452c79ad6d61a8dfdd7bb6d4e89026
 }
