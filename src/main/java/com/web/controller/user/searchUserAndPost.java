@@ -5,13 +5,11 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.web.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.web.common.SearchSomethings;
 import com.web.entities.AjaxResponse;
@@ -30,7 +28,7 @@ public class searchUserAndPost {
 	public UserService userService;
 
 //	Tìm kiếm keywords theo tên post
-	@RequestMapping(value = { "/seachSomethingOfPost" }, method = RequestMethod.GET)
+	@RequestMapping(value = { "/searchSomethingOfPost" }, method = RequestMethod.GET)
 	public ResponseEntity<AjaxResponse> search_post(@RequestBody String keyword, final ModelMap model,
 			final HttpServletRequest request, final HttpServletResponse response) {
 		SearchSomethings searchSomethings = new SearchSomethings();
@@ -39,5 +37,12 @@ public class searchUserAndPost {
 		return ResponseEntity.ok(new AjaxResponse(200, "OK", postData));
 	}
 //	Tìm kiếm theo tên user
+	/*@GetMapping("/searchSomethingOfUser")
+	public ResponseEntity<AjaxResponse> search_user(@RequestParam(required = false, defaultValue = "") String keyword){
+		SearchSomethings searchSomethings = new SearchSomethings();
+		searchSomethings.setKeyword(keyword);
+		List<User> userData = userService.search(searchSomethings);
+		return ResponseEntity.ok(new AjaxResponse(200, "OK", userData));
+	}*/
 
 }
