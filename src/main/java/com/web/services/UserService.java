@@ -1,11 +1,9 @@
 package com.web.services;
 
-<<<<<<< HEAD
+
 import java.io.File;
 import java.util.List;
 
-=======
->>>>>>> ddcc72f034452c79ad6d61a8dfdd7bb6d4e89026
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;

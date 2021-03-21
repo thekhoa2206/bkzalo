@@ -79,8 +79,4 @@ public class User extends BaseEntity {
 		this.avatar = avatar;
 	}
 
-<<<<<<< HEAD
-
-=======
->>>>>>> ddcc72f034452c79ad6d61a8dfdd7bb6d4e89026
 }
