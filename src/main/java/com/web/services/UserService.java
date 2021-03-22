@@ -1,7 +1,5 @@
 package com.web.services;
 
-
-
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -50,6 +48,7 @@ public class UserService {
 				User userInDb = userRepo.findById(user.getId()).get();
 
 			}
+
 			userRepo.save(user);
 		} catch (Exception e) {
 			throw e;
@@ -64,4 +63,5 @@ public class UserService {
 			throw e;
 		}
 	}
+
 }

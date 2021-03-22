@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.web.entities.AjaxResponse;
 import com.web.entities.Post;
+import com.web.entities.User;
 import com.web.repositories.PostRepo;
 import com.web.services.PostService;
 import com.web.services.UserService;
@@ -65,9 +66,20 @@ public class PutPostController {
 	@PostMapping(value = { "/update_post_info/{id}" }, produces = "application/json")
 	public ResponseEntity<AjaxResponse> update_post_info(@PathVariable("id") int id, @RequestBody Post postData,
 			final ModelMap model, final HttpServletRequest request, final HttpServletResponse response) {
-		postData.setId(id);
+		Post post = postService.findPostById(id);
+		// Không xóa thông tin xong DB
+		if (postData.getContent() != null) {
+			post.setContent(postData.getContent());
+		}
+		if (postData.getMedia() != null) {
+			post.setMedia(postData.getMedia());
+		}
+		if (postData.getUser() != null) {
+			post.setUser(postData.getUser());
+		}
+		// Không xóa thông tin xong DB
 		try {
-			postService.savePost(postData);
+			postService.savePost(post);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

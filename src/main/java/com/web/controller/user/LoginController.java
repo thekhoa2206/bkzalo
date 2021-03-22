@@ -20,6 +20,7 @@ public class LoginController {
 	@Autowired
 	UserService userService;
 
+//login
 	@PostMapping(value = { "/login" }, produces = "application/json")
 	public ResponseEntity<AjaxResponse> login(@RequestBody User data, final ModelMap model,
 			final HttpServletRequest request, final HttpServletResponse response) throws Exception {
@@ -34,10 +35,10 @@ public class LoginController {
 		}
 	}
 
+//logout
 	@GetMapping(value = { "/logout" }, produces = "application/json")
 	public ResponseEntity<AjaxResponse> logout(@RequestBody User data, final ModelMap model,
-			final HttpServletRequest request, final HttpServletResponse response)
-			throws Exception {
+			final HttpServletRequest request, final HttpServletResponse response) throws Exception {
 		return ResponseEntity.ok(new AjaxResponse(200, "Logout success!!", data));
 	}
 
