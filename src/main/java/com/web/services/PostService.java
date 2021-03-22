@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import com.web.common.SearchSomethings;
 import com.web.entities.Post;
+import com.web.entities.User;
 import com.web.repositories.PostRepo;
 
 @Service
@@ -24,7 +25,6 @@ public class PostService {
 	protected EntityManager entityManager;
 
 	public Post findPostById(final int id) {
-
 		String sql = "select * from tbl_posts where id = '" + id + "'";
 		Query query = entityManager.createNativeQuery(sql, Post.class);
 		return (Post) query.getSingleResult();
@@ -40,7 +40,7 @@ public class PostService {
 		postRepo.deleteById(id);
 	}
 	
-//	seach
+//	seachPost
 	@SuppressWarnings("unchecked")
 	public List<Post> search(final SearchSomethings searchSomethings) {
 
@@ -49,8 +49,16 @@ public class PostService {
 		Query query = entityManager.createQuery(jpql, Post.class);
 		return query.getResultList();
 	}
-	
-	
+//	searchUser
+	@SuppressWarnings("unchecked")
+	public List<User> searchUser(final SearchSomethings searchSomethings) {
+
+		String jpql = "Select p from User p where CONCAT(p.phone,' ', p.name) LIKE '%"
+				+ searchSomethings.getKeyword() + "%'";
+		Query query = entityManager.createQuery(jpql, User.class);
+		return query.getResultList();
+	}
+
 	@Transactional(rollbackOn = Exception.class)
 	public void savePost(Post post) throws Exception {
 		try {

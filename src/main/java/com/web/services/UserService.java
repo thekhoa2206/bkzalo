@@ -1,6 +1,7 @@
 package com.web.services;
 
 
+
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -28,7 +29,6 @@ public class UserService {
 		Query query = entityManager.createNativeQuery(sql, User.class);
 		return (User) query.getSingleResult();
 	}
-
 
 	public User finUserByPhone(final String phone) {
 		String sql = "select * from tbl_users where phone = '" + phone + "'";

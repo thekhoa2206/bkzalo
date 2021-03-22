@@ -8,5 +8,4 @@ import com.web.entities.Post;
 @Repository
 public interface PostRepo extends JpaRepository<Post, Integer> {
 
-
 }

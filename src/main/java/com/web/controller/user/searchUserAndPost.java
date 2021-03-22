@@ -1,7 +1,5 @@
 package com.web.controller.user;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -15,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.web.common.SearchSomethings;
 import com.web.entities.AjaxResponse;
-import com.web.entities.Post;
 import com.web.repositories.PostRepo;
 import com.web.services.PostService;
 import com.web.services.UserService;
@@ -37,5 +34,11 @@ public class searchUserAndPost {
 		return ResponseEntity.ok(new AjaxResponse(200, "OK", postService.search(keyword)));
 	}
 //	Tìm kiếm theo tên user
+	@RequestMapping(value = { "/seachSomethingOfUser" }, method = RequestMethod.GET)
+	public ResponseEntity<AjaxResponse> search_user(@RequestBody SearchSomethings keyword, final ModelMap model,
+			final HttpServletRequest request, final HttpServletResponse response) {
+		System.out.print(keyword.getKeyword());
+		return ResponseEntity.ok(new AjaxResponse(200, "OK", postService.searchUser(keyword)));
+	}
 
 }
