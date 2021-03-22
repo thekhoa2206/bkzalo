@@ -7,9 +7,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -79,8 +76,4 @@ public class User extends BaseEntity {
 		this.avatar = avatar;
 	}
 
-<<<<<<< HEAD
-
-=======
->>>>>>> ddcc72f034452c79ad6d61a8dfdd7bb6d4e89026
 }

@@ -31,12 +31,10 @@ public class searchUserAndPost {
 
 //	Tìm kiếm keywords theo tên post
 	@RequestMapping(value = { "/seachSomethingOfPost" }, method = RequestMethod.GET)
-	public ResponseEntity<AjaxResponse> search_post(@RequestBody String keyword, final ModelMap model,
+	public ResponseEntity<AjaxResponse> search_post(@RequestBody SearchSomethings keyword, final ModelMap model,
 			final HttpServletRequest request, final HttpServletResponse response) {
-		SearchSomethings searchSomethings = new SearchSomethings();
-		searchSomethings.setKeyword(keyword);
-		List<Post> postData = postService.search(searchSomethings);
-		return ResponseEntity.ok(new AjaxResponse(200, "OK", postData));
+		System.out.print(keyword.getKeyword());
+		return ResponseEntity.ok(new AjaxResponse(200, "OK", postService.search(keyword)));
 	}
 //	Tìm kiếm theo tên user
 

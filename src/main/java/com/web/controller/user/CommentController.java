@@ -55,7 +55,6 @@ public class CommentController extends BaseController {
 		try {
 			commentService.saveComment(data);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return ResponseEntity.ok(new AjaxResponse(200, "Comment Success!", data));

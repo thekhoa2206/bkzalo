@@ -39,7 +39,8 @@ public class PostService {
 	public void deletePostById(@PathVariable int id) {
 		postRepo.deleteById(id);
 	}
-
+	
+//	seach
 	@SuppressWarnings("unchecked")
 	public List<Post> search(final SearchSomethings searchSomethings) {
 
@@ -48,6 +49,8 @@ public class PostService {
 		Query query = entityManager.createQuery(jpql, Post.class);
 		return query.getResultList();
 	}
+	
+	
 	@Transactional(rollbackOn = Exception.class)
 	public void savePost(Post post) throws Exception {
 		try {
