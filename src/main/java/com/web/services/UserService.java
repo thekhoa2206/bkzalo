@@ -40,6 +40,12 @@ public class UserService {
 		return query.getResultList();
 	}
 
+	public List<Friend> findFriendById(final int id) {
+		String sql = "select * from tbl_friends AS t1, tbl_users AS t2 where t1.id_user_b = '" + id + "' AND t2.id = '" + t1.id_user_a + "' ";
+		Query query = entityManager.createNativeQuery(sql, Post.class);
+		return query.getResultList();
+	}
+
 	@Transactional(rollbackOn = Exception.class)
 	public void saveUser(User user) throws Exception {
 		try {

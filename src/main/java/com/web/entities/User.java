@@ -36,7 +36,10 @@ public class User extends BaseEntity {
 			, fetch = FetchType.LAZY)
 	private List<Comment> comment = new ArrayList<Comment>();
 
-
+	// 1 user -> N friends
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "id_user_a" /* tên property user trong class friend */
+			, fetch = FetchType.LAZY)
+	private List<Friend> friend = new ArrayList<Friend>();
 
 //	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 //	@JoinTable(name = "tbl_friends", joinColumns = @JoinColumn(name = "id_user_a"), inverseJoinColumns = @JoinColumn(name = "id_user_b"))

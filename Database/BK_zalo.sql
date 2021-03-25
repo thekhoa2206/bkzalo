@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.0.23, for Win64 (x86_64)
 --
--- Host: localhost    Database: bkzalo
+-- Host: 127.0.0.1    Database: bkzalo
 -- ------------------------------------------------------
 -- Server version	8.0.23
 
@@ -137,6 +137,7 @@ DROP TABLE IF EXISTS `tbl_friends`;
 CREATE TABLE `tbl_friends` (
   `id_user_a` int NOT NULL,
   `id_user_b` int NOT NULL,
+  `is_accept` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id_user_a`,`id_user_b`),
   KEY `id_friends_user_idx` (`id_user_a`),
   KEY `id_friends_user_2_idx` (`id_user_b`),
@@ -258,7 +259,7 @@ CREATE TABLE `tbl_users` (
 
 LOCK TABLES `tbl_users` WRITE;
 /*!40000 ALTER TABLE `tbl_users` DISABLE KEYS */;
-INSERT INTO `tbl_users` VALUES (1,'092872121','12334','nguyenvan','avatar.img'),(2,'092872121','12334','nguyenvan','avatar.img'),(3,'092872121','1233432322','nguyenvan','avatar.img');
+INSERT INTO `tbl_users` VALUES (1,'092872121','12334','nguyen','avatar.img'),(2,'092872121','12334','nguyenvan','avatar.img'),(3,'092872121','1233432322','nguyenvan','avatar.img');
 /*!40000 ALTER TABLE `tbl_users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -271,4 +272,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-03-18 17:57:20
+-- Dump completed on 2021-03-25 16:46:37
