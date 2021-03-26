@@ -23,8 +23,8 @@ public class FriendController {
     @PostMapping(value = { "/get_friend_request_info/{id}" }, produces = "application/json")
     public ResponseEntity<AjaxResponse> get_friend_request_info(@PathVariable("id") int id, @RequestBody User data,
                                                       final ModelMap model, final HttpServletRequest request, final HttpServletResponse response) {
-        data = userService.findFriendById(id);
-        return ResponseEntity.ok(new AjaxResponse(200, "Success!", data));
+
+        return ResponseEntity.ok(new AjaxResponse(200, "Success!", userService.findFriendById(id)));
     }
 
 }

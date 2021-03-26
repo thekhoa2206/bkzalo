@@ -135,10 +135,11 @@ DROP TABLE IF EXISTS `tbl_friends`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `tbl_friends` (
+  `id` int NOT NULL,
   `id_user_a` int NOT NULL,
   `id_user_b` int NOT NULL,
-  `is_accept` tinyint(1) DEFAULT '0',
-  PRIMARY KEY (`id_user_a`,`id_user_b`),
+  `is_accept` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
   KEY `id_friends_user_idx` (`id_user_a`),
   KEY `id_friends_user_2_idx` (`id_user_b`),
   CONSTRAINT `id_friends_user` FOREIGN KEY (`id_user_a`) REFERENCES `tbl_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -152,6 +153,7 @@ CREATE TABLE `tbl_friends` (
 
 LOCK TABLES `tbl_friends` WRITE;
 /*!40000 ALTER TABLE `tbl_friends` DISABLE KEYS */;
+INSERT INTO `tbl_friends` VALUES (1,1,2,0),(2,3,2,0),(3,4,2,0),(4,5,2,0);
 /*!40000 ALTER TABLE `tbl_friends` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -250,7 +252,7 @@ CREATE TABLE `tbl_users` (
   `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
   `avatar` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -259,7 +261,7 @@ CREATE TABLE `tbl_users` (
 
 LOCK TABLES `tbl_users` WRITE;
 /*!40000 ALTER TABLE `tbl_users` DISABLE KEYS */;
-INSERT INTO `tbl_users` VALUES (1,'092872121','12334','nguyen','avatar.img'),(2,'092872121','12334','nguyenvan','avatar.img'),(3,'092872121','1233432322','nguyenvan','avatar.img');
+INSERT INTO `tbl_users` VALUES (1,'092872121','12334','nguyen','avatar.img'),(2,'092872121','123345','bui','avatar.img'),(3,'092872121','1233432322','vu','avatar.img'),(4,'0904515270','123','vo',NULL),(5,'0905555555','123456','van',NULL);
 /*!40000 ALTER TABLE `tbl_users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -272,4 +274,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-03-25 16:46:37
+-- Dump completed on 2021-03-26 10:44:09
