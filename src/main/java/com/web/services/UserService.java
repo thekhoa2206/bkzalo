@@ -7,6 +7,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
 
+import com.web.common.SearchSomethings;
 import com.web.entities.Friend;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,10 +42,10 @@ public class UserService {
 		return query.getResultList();
 	}
 
-	public List<Friend> findFriendById(final int id) {
+	public List<Friend> findFriendById(final SearchSomethings searchSomethings) {
 //		String sql = "select * from tbl_friends AS t1, tbl_users AS t2 where t1.id_user_b = '" + id + "' AND t2.id = '" + t1.id_user_a + "' ";
 //		String sql = "select * from tbl_friends , tbl_users where tbl_friends.id_user_b = '" + id + "' AND tbl_users.id = '" + tbl_friends.id_user_a + "' ";
-		String sql = "select * from tbl_friends where id_user_b = '" + id + "' ";
+		String sql = "select * from tbl_friends where id_user_b = '" + searchSomethings.getKeyword() + "' AND is_accept = '"+ 0 +"' ";
 
 		Query query = entityManager.createNativeQuery(sql, Friend.class);
 		return query.getResultList();
@@ -64,7 +65,12 @@ public class UserService {
 			throw e;
 		}
 	}
-
+	//	SearchByID and isRequest =1 => Tìm bạn của user
+	public List<Friend> findFriendInfo(final int id) {
+		String sql = "select * from tbl_friends where id_user_b = '" + id + "' and is_accept = true";
+		Query query = entityManager.createNativeQuery(sql, Friend.class);
+		return query.getResultList();
+	}
 	@Transactional(rollbackOn = Exception.class)
 	public void saveGuestUser(User user) throws Exception {
 		try {
