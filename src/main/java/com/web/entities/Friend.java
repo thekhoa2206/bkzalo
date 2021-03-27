@@ -4,64 +4,40 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "tbl_friends")
-public class Friend extends BaseEntity{
+public class Friend extends BaseEntity {
 
-    @Column(name = "id", length = 100, nullable = false)
-    private Integer id;
+	@Column(name = "is_accept", nullable = false)
+	private boolean isAccept;
 
-    @Column(name = "id_user_a", length = 100, nullable = false)
-    private Integer id_user_a;
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "id_user_a")
+	private User userA;
 
-    @Column(name = "id_user_b", length = 100, nullable = false)
-    private Integer id_user_b;
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "id_user_b")
+	private User userB;
 
-    @Column(name = "is_accept", length = 1, nullable = false)
-    private Boolean is_accept;
+	public boolean getIsAccept() {
+		return isAccept;
+	}
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_user_a",referencedColumnName="id", insertable=false, updatable=false)
-    private User user;
+	public void setIsAccept(boolean isAccept) {
+		this.isAccept = isAccept;
+	}
 
-    @Override
-    public Integer getId() {
-        return id;
-    }
+	public User getUserA() {
+		return userA;
+	}
 
-    @Override
-    public void setId(Integer id) {
-        this.id = id;
-    }
+	public void setUserA(User userA) {
+		this.userA = userA;
+	}
 
-    public User getUser() {
-        return user;
-    }
+	public User getUserB() {
+		return userB;
+	}
 
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Integer getId_user_a() {
-        return id_user_a;
-    }
-
-    public void setId_user_a(Integer id_user_a) {
-        this.id_user_a = id_user_a;
-    }
-
-    public Integer getId_user_b() {
-        return id_user_b;
-    }
-
-    public void setId_user_b(Integer id_user_b) {
-        this.id_user_b = id_user_b;
-    }
-
-    public Boolean getIs_accept() {
-        return is_accept;
-    }
-
-    public void setIs_accept(Boolean is_accept) {
-        this.is_accept = is_accept;
-    }
-
+	public void setUserB(User userB) {
+		this.userB = userB;
+	}
 }
