@@ -24,25 +24,22 @@ import com.web.services.UserService;
 public class LikeController {
 	@Autowired
 	PostRepo postRepo;
-	
+
 	@Autowired
 	PostService postService;
-	
+
 	@Autowired
 	UserService userService;
-	
+
 	@PostMapping(value = { "/{user_id}/post/{id_post}/like" }, produces = "application/json")
 	public ResponseEntity<AjaxResponse> like(@PathVariable("id_post") int idPost, @PathVariable("user_id") int idUser,
 			final ModelMap model, final HttpServletRequest request, final HttpServletResponse response) {
 		Post post = postService.findPostById(idPost);
-
 		post.getLike().add(userService.findUserById(idUser));
 		postRepo.save(post);
-		
 		Post like = postService.findPostById(idPost);
-		
 		int data = like.getLike().size();
-		return ResponseEntity.ok(new AjaxResponse(200,"Like Success!", data));
+		return ResponseEntity.ok(new AjaxResponse(200, "Like Success!", data));
 	}
 
 }
