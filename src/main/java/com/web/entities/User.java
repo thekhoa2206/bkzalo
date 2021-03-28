@@ -12,10 +12,14 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "tbl_users")
 public class User extends BaseEntity {
+
+	@Transient
+	private String token;
 
 	@Column(name = "password", length = 100, nullable = false)
 	private String password;
@@ -38,6 +42,16 @@ public class User extends BaseEntity {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user" /* tên property user trong class comment */
 			, fetch = FetchType.LAZY)
 	private List<Comment> comment = new ArrayList<Comment>();
+
+	// 1 user -> N commments
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "userSender" /* tên property user trong class comment */
+			, fetch = FetchType.LAZY)
+	private List<Chat> chatSender = new ArrayList<Chat>();
+
+	// 1 user -> N commments
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "userReceiver" /* tên property user trong class comment */
+			, fetch = FetchType.LAZY)
+	private List<Chat> chatReceiver = new ArrayList<Chat>();
 
 	@ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, mappedBy = "like")
 	private List<Post> like = new ArrayList<Post>();
@@ -76,6 +90,14 @@ public class User extends BaseEntity {
 
 	public void setAvatar(String avatar) {
 		this.avatar = avatar;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
 	}
 
 }

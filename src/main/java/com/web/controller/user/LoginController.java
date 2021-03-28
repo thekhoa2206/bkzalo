@@ -19,13 +19,15 @@ import com.web.services.UserService;
 public class LoginController {
 	@Autowired
 	UserService userService;
-
+	
 	@PostMapping(value = { "/login" }, produces = "application/json")
 	public ResponseEntity<AjaxResponse> login(@RequestBody User data, final ModelMap model,
 			final HttpServletRequest request, final HttpServletResponse response) throws Exception {
 		String phone = data.getPhone();
 		if (userService.finUserByPhone(phone).getPassword().compareTo(data.getPassword()) == 0) {
 			data = userService.finUserByPhone(phone);
+			data.setToken(userService.createJWT(data.getPhone()));
+			System.out.println(userService.createJWT(data.getPhone()));
 			return ResponseEntity.ok(new AjaxResponse(200, "Login success!!", data));
 		} else {
 			data.setPassword(null);
@@ -38,6 +40,7 @@ public class LoginController {
 	public ResponseEntity<AjaxResponse> logout(@RequestBody User data, final ModelMap model,
 			final HttpServletRequest request, final HttpServletResponse response)
 			throws Exception {
+		data = null;
 		return ResponseEntity.ok(new AjaxResponse(200, "Logout success!!", data));
 	}
 
