@@ -7,6 +7,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -40,7 +41,6 @@ public class User extends BaseEntity {
 			, fetch = FetchType.LAZY)
 	private List<Comment> comment = new ArrayList<Comment>();
 
-<<<<<<< HEAD
 	// 1 user -> N commments
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "userSender" /* tên property user trong class comment */
 			, fetch = FetchType.LAZY)
@@ -53,14 +53,14 @@ public class User extends BaseEntity {
 
 	@ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, mappedBy = "like")
 	private List<Post> like = new ArrayList<Post>();
-=======
+
 	// 1 user -> N friends
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "id_user_a" /* tên property user trong class friend */
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "userAId" /* tên property user trong class friend */
 			, fetch = FetchType.LAZY)
 	private List<Friend> friendA = new ArrayList<Friend>();
 
 	// 1 user -> N friends
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "id_user_b" /* tên property user trong class friend */
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "userBId" /* tên property user trong class friend */
 			, fetch = FetchType.LAZY)
 	private List<Friend> friendB = new ArrayList<Friend>();
 
@@ -73,11 +73,7 @@ public class User extends BaseEntity {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "id_block_user" /* tên property user trong class block */
 			, fetch = FetchType.LAZY)
 	private List<Block> blockUser = new ArrayList<Block>();
->>>>>>> 7e18cd43f2bee1ff8619b906de1ba7839482ebaa
 
-//	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-//	@JoinTable(name = "tbl_friends", joinColumns = @JoinColumn(name = "id_user_a"), inverseJoinColumns = @JoinColumn(name = "id_user_b"))
-//	private List<User> user = new ArrayList<User>();
 
 	public String getPassword() {
 		return password;

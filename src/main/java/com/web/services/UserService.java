@@ -1,10 +1,7 @@
 package com.web.services;
 
-<<<<<<< HEAD
 import java.security.Key;
 import java.util.Date;
-=======
->>>>>>> 7e18cd43f2bee1ff8619b906de1ba7839482ebaa
 import java.util.List;
 
 import javax.crypto.spec.SecretKeySpec;
@@ -39,7 +36,6 @@ public class UserService {
 	public static final String SECRET_KEY = "oeRaYY7Wo24sDqKSX3IM9ASGmdGPmkTd9jo1QTy4b7P9Ze5_9hKolVX8xNrQDcNRfVEdTZNOuOyqEGhXEbdJI-ZQ19k_o9MI0y3eZN2lp9jow55FfXMiINEdt1XR85VipRLSOkT6kSpzs2x-jbLDiz9iFVzkd81YKxMgPA7VfZeQUm4n-mOmnWMaVX30zGFU4L3oPBctYKkl4dYfqYWqRNfrgPJVi5DGFjywgxx0ASEiJHtV72paI3fDR2XwlSkyhhmY-ICjCRmsJN4fX1pdoL8a18-aQrvyu4j0Os6dVPYIoPvvY0SAZtWYKHfM15g7A3HD4cVREf9cUsprCRK93w";
 	public static final Long ttlMillis = 86400000L;
 
-	
 	public User findUserById(final int id) {
 
 		String sql = "select * from tbl_users where id = '" + id + "'";
@@ -62,7 +58,8 @@ public class UserService {
 	public List<Friend> findFriendById(final SearchSomethings searchSomethings) {
 //		String sql = "select * from tbl_friends AS t1, tbl_users AS t2 where t1.id_user_b = '" + id + "' AND t2.id = '" + t1.id_user_a + "' ";
 //		String sql = "select * from tbl_friends , tbl_users where tbl_friends.id_user_b = '" + id + "' AND tbl_users.id = '" + tbl_friends.id_user_a + "' ";
-		String sql = "select * from tbl_friends where id_user_b = '" + searchSomethings.getKeyword() + "' AND is_accept = '"+ 0 +"' ";
+		String sql = "select * from tbl_friends where id_user_b = '" + searchSomethings.getKeyword()
+				+ "' AND is_accept = '" + 0 + "' ";
 
 		Query query = entityManager.createNativeQuery(sql, Friend.class);
 		return query.getResultList();
@@ -82,12 +79,14 @@ public class UserService {
 			throw e;
 		}
 	}
-	//	SearchByID and isRequest =1 => Tìm bạn của user
+
+	// SearchByID and isRequest =1 => Tìm bạn của user
 	public List<Friend> findFriendInfo(final int id) {
 		String sql = "select * from tbl_friends where id_user_b = '" + id + "' and is_accept = true";
 		Query query = entityManager.createNativeQuery(sql, Friend.class);
 		return query.getResultList();
 	}
+
 	@Transactional(rollbackOn = Exception.class)
 	public void saveGuestUser(User user) throws Exception {
 		try {
@@ -96,8 +95,7 @@ public class UserService {
 			throw e;
 		}
 	}
-<<<<<<< HEAD
-	
+
 	public String createJWT(String issuer) {
 		String UUID = finUserByPhone(issuer).getName();
 		// The JWT signature algorithm we will be using to sign the token
@@ -125,6 +123,7 @@ public class UserService {
 		// Builds the JWT and serializes it to a compact, URL-safe string
 		return builder.compact();
 	}
+
 	public boolean validateToken(String jwt) {
 		// This line will throw an exception if it is not a signed JWS (as expected)
 
@@ -140,9 +139,4 @@ public class UserService {
 		}
 		return false;
 	}
-
-	
-=======
-
->>>>>>> 7e18cd43f2bee1ff8619b906de1ba7839482ebaa
 }
