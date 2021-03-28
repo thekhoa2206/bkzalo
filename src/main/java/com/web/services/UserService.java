@@ -1,7 +1,10 @@
 package com.web.services;
 
+<<<<<<< HEAD
 import java.security.Key;
 import java.util.Date;
+=======
+>>>>>>> 7e18cd43f2bee1ff8619b906de1ba7839482ebaa
 import java.util.List;
 
 import javax.crypto.spec.SecretKeySpec;
@@ -11,6 +14,8 @@ import javax.persistence.Query;
 import javax.transaction.Transactional;
 import javax.xml.bind.DatatypeConverter;
 
+import com.web.common.SearchSomethings;
+import com.web.entities.Friend;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -54,6 +59,15 @@ public class UserService {
 		return query.getResultList();
 	}
 
+	public List<Friend> findFriendById(final SearchSomethings searchSomethings) {
+//		String sql = "select * from tbl_friends AS t1, tbl_users AS t2 where t1.id_user_b = '" + id + "' AND t2.id = '" + t1.id_user_a + "' ";
+//		String sql = "select * from tbl_friends , tbl_users where tbl_friends.id_user_b = '" + id + "' AND tbl_users.id = '" + tbl_friends.id_user_a + "' ";
+		String sql = "select * from tbl_friends where id_user_b = '" + searchSomethings.getKeyword() + "' AND is_accept = '"+ 0 +"' ";
+
+		Query query = entityManager.createNativeQuery(sql, Friend.class);
+		return query.getResultList();
+	}
+
 	@Transactional(rollbackOn = Exception.class)
 	public void saveUser(User user) throws Exception {
 		try {
@@ -62,12 +76,18 @@ public class UserService {
 				User userInDb = userRepo.findById(user.getId()).get();
 
 			}
+
 			userRepo.save(user);
 		} catch (Exception e) {
 			throw e;
 		}
 	}
-
+	//	SearchByID and isRequest =1 => Tìm bạn của user
+	public List<Friend> findFriendInfo(final int id) {
+		String sql = "select * from tbl_friends where id_user_b = '" + id + "' and is_accept = true";
+		Query query = entityManager.createNativeQuery(sql, Friend.class);
+		return query.getResultList();
+	}
 	@Transactional(rollbackOn = Exception.class)
 	public void saveGuestUser(User user) throws Exception {
 		try {
@@ -76,6 +96,7 @@ public class UserService {
 			throw e;
 		}
 	}
+<<<<<<< HEAD
 	
 	public String createJWT(String issuer) {
 		String UUID = finUserByPhone(issuer).getName();
@@ -121,4 +142,7 @@ public class UserService {
 	}
 
 	
+=======
+
+>>>>>>> 7e18cd43f2bee1ff8619b906de1ba7839482ebaa
 }

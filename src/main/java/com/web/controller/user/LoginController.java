@@ -19,7 +19,12 @@ import com.web.services.UserService;
 public class LoginController {
 	@Autowired
 	UserService userService;
+<<<<<<< HEAD
 	
+=======
+
+//login
+>>>>>>> 7e18cd43f2bee1ff8619b906de1ba7839482ebaa
 	@PostMapping(value = { "/login" }, produces = "application/json")
 	public ResponseEntity<AjaxResponse> login(@RequestBody User data, final ModelMap model,
 			final HttpServletRequest request, final HttpServletResponse response) throws Exception {
@@ -36,11 +41,16 @@ public class LoginController {
 		}
 	}
 
+//logout
 	@GetMapping(value = { "/logout" }, produces = "application/json")
 	public ResponseEntity<AjaxResponse> logout(@RequestBody User data, final ModelMap model,
+<<<<<<< HEAD
 			final HttpServletRequest request, final HttpServletResponse response)
 			throws Exception {
 		data = null;
+=======
+			final HttpServletRequest request, final HttpServletResponse response) throws Exception {
+>>>>>>> 7e18cd43f2bee1ff8619b906de1ba7839482ebaa
 		return ResponseEntity.ok(new AjaxResponse(200, "Logout success!!", data));
 	}
 
