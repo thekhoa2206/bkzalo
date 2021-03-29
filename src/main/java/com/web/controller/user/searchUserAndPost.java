@@ -33,6 +33,7 @@ public class searchUserAndPost {
 		System.out.print(keyword.getKeyword());
 		return ResponseEntity.ok(new AjaxResponse(200, "OK", postService.search(keyword)));
 	}
+
 //	Tìm kiếm theo tên user
 	@RequestMapping(value = { "/seachSomethingOfUser" }, method = RequestMethod.GET)
 	public ResponseEntity<AjaxResponse> search_user(@RequestBody SearchSomethings keyword, final ModelMap model,

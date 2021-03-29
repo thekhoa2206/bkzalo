@@ -42,6 +42,12 @@ public class UserService {
 		Query query = entityManager.createNativeQuery(sql, User.class);
 		return (User) query.getSingleResult();
 	}
+//	public User findUserById(final int id1,final int id2) {
+//
+//		String sql = "select * from tbl_users where id = '" + id1 + "' or id ='"+id2+"' ";
+//		Query query = entityManager.createNativeQuery(sql, User.class);
+//		return (User) query.getSingleResult();
+//	}
 
 	public User finUserByPhone(final String phone) {
 		String sql = "select * from tbl_users where phone = '" + phone + "'";
@@ -80,6 +86,11 @@ public class UserService {
 		}
 	}
 
+	public List<User> findAllUser() {
+		String sql = "select * from tbl_users";
+		Query query = entityManager.createNativeQuery(sql, Post.class);
+		return query.getResultList();
+	}
 	// SearchByID and isRequest =1 => Tìm bạn của user
 	public List<Friend> findFriendInfo(final int id) {
 		String sql = "select * from tbl_friends where id_user_b = '" + id + "' and is_accept = true";

@@ -11,10 +11,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.web.common.SearchSomethings;
 import com.web.entities.AjaxResponse;
+import com.web.entities.Block;
+import com.web.repositories.BlockRepo;
 import com.web.repositories.UserRepo;
 import com.web.services.UserService;
 
@@ -24,6 +27,8 @@ public class FriendController {
 	public UserRepo userRepo;
 	@Autowired
 	UserService userService;
+	@Autowired
+	BlockRepo blockRepo;
 
 	// Lấy thông tin FriendRequest
 	@RequestMapping(value = { "/get_friend_request_info" }, method = RequestMethod.POST)
@@ -39,20 +44,16 @@ public class FriendController {
 			final HttpServletRequest request, final HttpServletResponse response) {
 		return ResponseEntity.ok(new AjaxResponse(200, "Success!", userService.findFriendInfo(id)));
 	}
-	//Blocks
-	
-	
-	
-	
-	
-	//Chấp nhận yêu cầu kết bạn
-	
-	
-	
-	
-	
-	
-	//bỏ block
-	
-	
+
+	// Set_block_user
+	@PostMapping(value = { "/block" }, produces = "application/json")
+	public ResponseEntity<AjaxResponse> block_user(@RequestParam("id_user_block") int id_user_block,
+			@RequestParam("id_block_user") int id_block_user, final ModelMap model,Block blockUser, final HttpServletRequest request,
+			final HttpServletResponse response) {
+		blockUser.setId_block_user(userService.findUserById(id_user_block));
+		blockUser.setId_block_user(userService.findUserById(id_block_user));
+		blockRepo.save(blockUser);
+		return ResponseEntity.ok(new AjaxResponse(200, "Block Successfully!", blockUser));
+	}
+
 }
