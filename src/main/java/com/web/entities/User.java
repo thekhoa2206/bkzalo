@@ -65,12 +65,12 @@ public class User extends BaseEntity {
 	private List<Friend> friendB = new ArrayList<Friend>();
 
 	// 1 user -> Block many friends
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "id_user_block" /* tên property user trong class block */
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "userBlockId" /* tên property user trong class block */
 			, fetch = FetchType.LAZY)
 	private List<Block> userBlock = new ArrayList<Block>();
 
 	// 1 user -> Block many friends
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "id_block_user" /* tên property user trong class block */
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "blockUserId" /* tên property user trong class block */
 			, fetch = FetchType.LAZY)
 	private List<Block> blockUser = new ArrayList<Block>();
 

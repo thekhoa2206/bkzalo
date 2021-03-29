@@ -1,8 +1,24 @@
 package com.web.entities;
 
-public class AjaxResponse {
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+@Entity
+@Table(name = "tbl_response")
+public class AjaxResponse extends BaseEntity {
+
+	@Column(name = "code", nullable = false)
 	private int code;
+	
+	@Column(name = "message", length = 100, nullable = false)
 	private String message;
+	
+	@Column(name = "note", length = 500, nullable = false)
+	private String note;
+	
+	@Transient
 	private Object data;
 
 	public AjaxResponse(int code, String message, Object data) {
@@ -41,4 +57,13 @@ public class AjaxResponse {
 	public void setCode(int code) {
 		this.code = code;
 	}
+
+	public String getNote() {
+		return note;
+	}
+
+	public void setNote(String note) {
+		this.note = note;
+	}
+	
 }

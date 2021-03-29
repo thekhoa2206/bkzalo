@@ -12,25 +12,24 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.web.entities.AjaxResponse;
 import com.web.entities.Post;
-import com.web.entities.User;
 import com.web.repositories.PostRepo;
 import com.web.services.PostService;
+import com.web.services.ResponseService;
 import com.web.services.UserService;
 
 @RestController
-public class PutPostController {
+public class PutPostController extends BaseController{
 	@Autowired
 	PostRepo postRepo;
 	@Autowired
 	public PostService postService;
 	@Autowired
 	public UserService userService;
+	
 
 //	User đăng bài
 	@PostMapping(value = { "/user/{id_user}/put_post" }, produces = "application/json")
@@ -43,7 +42,7 @@ public class PutPostController {
 		post.setMedia(media);
 		post.setUser(userService.findUserById(id_user));
 		postRepo.save(post);
-		return ResponseEntity.ok(new AjaxResponse(200, "Post Status successful", postData));
+		return ResponseEntity.ok(new AjaxResponse(1000, responseService.findResponseByCode(1000).getMessage(), postData));
 	}
 
 //  Tìm bài viết của user (riêng từng bài )
@@ -86,11 +85,17 @@ public class PutPostController {
 		return ResponseEntity.ok(new AjaxResponse(200, "update successfully", postData));
 	}
 
-//	Xóa bài viết -> Nhưng chưa làm đc của user nào xóa bài của user đấy -> Lấy cả tbl-posts.id và tbl-user.id
+	// Xóa bài viết -> Nhưng chưa làm đc của user nào xóa bài của user đấy -> Lấy cả tbl-posts.id và tbl-user.id
 	@GetMapping(value = { "/delete_user_post/user/{id}" }, produces = "application/json")
 	public ResponseEntity<AjaxResponse> delete_post_user(@PathVariable("id") int id, final ModelMap model,
 			final HttpServletRequest request, final HttpServletResponse response) {
 		postService.deletePostById(id);
+		return ResponseEntity.ok(new AjaxResponse(200, "OK"));
+	}
+	// Báo cáo bài viết
+	@GetMapping(value = { "/report/user/{id}" }, produces = "application/json")
+	public ResponseEntity<AjaxResponse> report(@PathVariable("id") int id, final ModelMap model,
+			final HttpServletRequest request, final HttpServletResponse response) {
 		return ResponseEntity.ok(new AjaxResponse(200, "OK"));
 	}
 
