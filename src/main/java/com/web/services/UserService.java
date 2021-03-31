@@ -64,7 +64,7 @@ public class UserService {
 		return query.getResultList();
 	}
 
-	public List<Friend> findFriendById(final SearchSomethings searchSomethings) {
+	public List<Friend> findFriendRequestById(final SearchSomethings searchSomethings) {
 //		String sql = "select * from tbl_friends AS t1, tbl_users AS t2 where t1.id_user_b = '" + id + "' AND t2.id = '" + t1.id_user_a + "' ";
 //		String sql = "select * from tbl_friends , tbl_users where tbl_friends.id_user_b = '" + id + "' AND tbl_users.id = '" + tbl_friends.id_user_a + "' ";
 		String sql = "select * from tbl_friends where id_user_b = '" + searchSomethings.getKeyword()
@@ -74,7 +74,16 @@ public class UserService {
 		return query.getResultList();
 	}
 
-	//Gửi yêu cầu kết bạn
+	public Friend findFriendRequestById(final Integer idA, final Integer idB) {
+
+		String sql = "select * from tbl_friends where id_user_b = '" + idB
+				+ "' AND is_accept = '" + 0 + "' AND id_user_a = '" + idA + "' ";
+
+		Query query = entityManager.createNativeQuery(sql, Friend.class);
+		return (Friend) query.getSingleResult();
+	}
+
+	//Gửi yêu cầu và chấp nhận lời mời kết bạn
 	@Transactional(rollbackOn = Exception.class)
 	public void saveFriendRequest(Friend friendData) throws Exception {
 		try {
@@ -84,6 +93,14 @@ public class UserService {
 		}
 	}
 
+	//Xóa yêu cầu kết bạn
+	@Transactional(rollbackOn = Exception.class)
+	public void deleteFriendRequest(final Integer idA, final Integer idB) {
+		String sql = "delete from tbl_friends where id_user_b = '" + idB
+				+ "' AND is_accept = '" + 0 + "' AND id_user_a = '" + idA + "' ";
+		Query query = entityManager.createNativeQuery(sql);
+		query.executeUpdate();
+	}
 
 	@Transactional(rollbackOn = Exception.class)
 	public void saveUser(User user) throws Exception {

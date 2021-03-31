@@ -33,10 +33,10 @@ public class FriendController {
 
 	// Lấy thông tin FriendRequest
 	@RequestMapping(value = { "/get_friend_request_info" }, method = RequestMethod.POST)
-	public ResponseEntity<AjaxResponse> search_user(@RequestBody SearchSomethings keyword, final ModelMap model,
+	public ResponseEntity<AjaxResponse> get_friend_request_info(@RequestBody SearchSomethings keyword, final ModelMap model,
 			final HttpServletRequest request, final HttpServletResponse response) {
 		System.out.print(keyword.getKeyword());
-		return ResponseEntity.ok(new AjaxResponse(200, "Success!", userService.findFriendById(keyword)));
+		return ResponseEntity.ok(new AjaxResponse(200, "Success!", userService.findFriendRequestById(keyword)));
 	}
 
 	// Xem danh sách bạn bè
@@ -71,7 +71,23 @@ public class FriendController {
 	}
 
 
-	// Chấp nhận yêu cầu kết bạn
+	// Chấp nhận và hủy yêu cầu kết bạn
+	@RequestMapping(value = { "/set_accept_friend" }, method = RequestMethod.POST)
+	public ResponseEntity<AjaxResponse> set_accept_friend(@RequestParam Integer idA,@RequestParam Integer idB,@RequestParam Boolean isAccept,Friend friendData, final ModelMap model,
+														   final HttpServletRequest request, final HttpServletResponse response) throws Exception {
+
+//		friendData.setUserAId(userService.findUserById(idA));
+//		friendData.setUserBId(userService.findUserById(idB));
+		friendData = userService.findFriendRequestById(idA, idB);
+		friendData.setIsAccept(isAccept);
+		if(isAccept==false){
+		userService.deleteFriendRequest(idA, idB);
+		friendData = null;
+		}else{
+			userService.saveFriendRequest(friendData);
+		}
+		return ResponseEntity.ok(new AjaxResponse(200, "Success!",friendData));
+	}
 
 	// bỏ block
 
