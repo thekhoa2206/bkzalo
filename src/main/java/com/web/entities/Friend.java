@@ -25,10 +25,6 @@ public class Friend extends BaseEntity {
 		this.isAccept = isAccept;
 	}
 
-	public void setAccept(boolean isAccept) {
-		this.isAccept = isAccept;
-	}
-
 	public User getUserAId() {
 		return userAId;
 	}

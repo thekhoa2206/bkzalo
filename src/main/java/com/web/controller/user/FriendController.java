@@ -11,10 +11,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.web.common.SearchSomethings;
 import com.web.entities.AjaxResponse;
+import com.web.entities.Block;
+import com.web.entities.Friend;
+import com.web.repositories.BlockRepo;
 import com.web.repositories.UserRepo;
 import com.web.services.UserService;
 
@@ -24,13 +28,15 @@ public class FriendController {
 	public UserRepo userRepo;
 	@Autowired
 	UserService userService;
+	@Autowired
+	BlockRepo blockRepo;
 
 	// Lấy thông tin FriendRequest
 	@RequestMapping(value = { "/get_friend_request_info" }, method = RequestMethod.POST)
-	public ResponseEntity<AjaxResponse> search_user(@RequestBody SearchSomethings keyword, final ModelMap model,
+	public ResponseEntity<AjaxResponse> get_friend_request_info(@RequestBody SearchSomethings keyword, final ModelMap model,
 			final HttpServletRequest request, final HttpServletResponse response) {
 		System.out.print(keyword.getKeyword());
-		return ResponseEntity.ok(new AjaxResponse(200, "Success!", userService.findFriendById(keyword)));
+		return ResponseEntity.ok(new AjaxResponse(200, "Success!", userService.findFriendRequestById(keyword)));
 	}
 
 	// Xem danh sách bạn bè
@@ -39,20 +45,50 @@ public class FriendController {
 			final HttpServletRequest request, final HttpServletResponse response) {
 		return ResponseEntity.ok(new AjaxResponse(200, "Success!", userService.findFriendInfo(id)));
 	}
-	//Blocks
-	
-	
-	
-	
-	
-	//Chấp nhận yêu cầu kết bạn
-	
-	
-	
-	
-	
-	
-	//bỏ block
-	
-	
+
+	// Set_block_user
+	@PostMapping(value = { "/block" }, produces = "application/json")
+
+	public ResponseEntity<AjaxResponse> block_user(@RequestParam("id_user_block") int id_user_block,
+			@RequestParam("id_block_user") int id_block_user, final ModelMap model, Block blockUser,
+			final HttpServletRequest request, final HttpServletResponse response) {
+		blockUser.setId_block_user(userService.findUserById(id_user_block));
+		blockUser.setId_block_user(userService.findUserById(id_block_user));
+		blockRepo.save(blockUser);
+		return ResponseEntity.ok(new AjaxResponse(200, "Block Successfully!", blockUser));
+	}
+
+	// Gửi yêu cầu kết bạn
+	@RequestMapping(value = { "/set_request_friend" }, method = RequestMethod.POST)
+	public ResponseEntity<AjaxResponse> set_request_friend(@RequestParam Integer idA,@RequestParam Integer idB,Friend friendData, final ModelMap model,
+														   final HttpServletRequest request, final HttpServletResponse response) throws Exception {
+
+		friendData.setUserAId(userService.findUserById(idA));
+		friendData.setUserBId(userService.findUserById(idB));
+		friendData.setIsAccept(false);
+		userService.saveFriendRequest(friendData);
+		return ResponseEntity.ok(new AjaxResponse(200, "Success!",friendData));
+	}
+
+
+	// Chấp nhận và hủy yêu cầu kết bạn
+	@RequestMapping(value = { "/set_accept_friend" }, method = RequestMethod.POST)
+	public ResponseEntity<AjaxResponse> set_accept_friend(@RequestParam Integer idA,@RequestParam Integer idB,@RequestParam Boolean isAccept,Friend friendData, final ModelMap model,
+														   final HttpServletRequest request, final HttpServletResponse response) throws Exception {
+
+//		friendData.setUserAId(userService.findUserById(idA));
+//		friendData.setUserBId(userService.findUserById(idB));
+		friendData = userService.findFriendRequestById(idA, idB);
+		friendData.setIsAccept(isAccept);
+		if(isAccept==false){
+		userService.deleteFriendRequest(idA, idB);
+		friendData = null;
+		}else{
+			userService.saveFriendRequest(friendData);
+		}
+		return ResponseEntity.ok(new AjaxResponse(200, "Success!",friendData));
+	}
+
+	// bỏ block
+
 }

@@ -15,6 +15,7 @@ import javax.xml.bind.DatatypeConverter;
 
 import com.web.common.SearchSomethings;
 import com.web.entities.Friend;
+import com.web.repositories.FriendRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +37,8 @@ public class UserService {
 	protected EntityManager entityManager;
 	@Autowired
 	public UserRepo userRepo;
+	@Autowired
+	public FriendRepo friendRepo;
 
 	public static final String SECRET_KEY = "oeRaYY7Wo24sDqKSX3IM9ASGmdGPmkTd9jo1QTy4b7P9Ze5_9hKolVX8xNrQDcNRfVEdTZNOuOyqEGhXEbdJI-ZQ19k_o9MI0y3eZN2lp9jow55FfXMiINEdt1XR85VipRLSOkT6kSpzs2x-jbLDiz9iFVzkd81YKxMgPA7VfZeQUm4n-mOmnWMaVX30zGFU4L3oPBctYKkl4dYfqYWqRNfrgPJVi5DGFjywgxx0ASEiJHtV72paI3fDR2XwlSkyhhmY-ICjCRmsJN4fX1pdoL8a18-aQrvyu4j0Os6dVPYIoPvvY0SAZtWYKHfM15g7A3HD4cVREf9cUsprCRK93w";
 	public static final Long ttlMillis = 86400000L;
@@ -46,6 +49,7 @@ public class UserService {
 		Query query = entityManager.createNativeQuery(sql, User.class);
 		return (User) query.getSingleResult();
 	}
+<<<<<<< HEAD
 	
 	public List<Roles> findRoleById(final int id) {
 
@@ -53,6 +57,14 @@ public class UserService {
 		Query query = entityManager.createNativeQuery(sql, Roles.class);
 		return query.getResultList();
 	}
+=======
+//	public User findUserById(final int id1,final int id2) {
+//
+//		String sql = "select * from tbl_users where id = '" + id1 + "' or id ='"+id2+"' ";
+//		Query query = entityManager.createNativeQuery(sql, User.class);
+//		return (User) query.getSingleResult();
+//	}
+>>>>>>> c98aa59413f4e27105fe6be3c39e73e3bfee8247
 
 	public User finUserByPhone(final String phone) {
 		String sql = "select * from tbl_users where phone = '" + phone + "'";
@@ -67,7 +79,7 @@ public class UserService {
 		return query.getResultList();
 	}
 
-	public List<Friend> findFriendById(final SearchSomethings searchSomethings) {
+	public List<Friend> findFriendRequestById(final SearchSomethings searchSomethings) {
 //		String sql = "select * from tbl_friends AS t1, tbl_users AS t2 where t1.id_user_b = '" + id + "' AND t2.id = '" + t1.id_user_a + "' ";
 //		String sql = "select * from tbl_friends , tbl_users where tbl_friends.id_user_b = '" + id + "' AND tbl_users.id = '" + tbl_friends.id_user_a + "' ";
 		String sql = "select * from tbl_friends where id_user_b = '" + searchSomethings.getKeyword()
@@ -75,6 +87,34 @@ public class UserService {
 
 		Query query = entityManager.createNativeQuery(sql, Friend.class);
 		return query.getResultList();
+	}
+
+	public Friend findFriendRequestById(final Integer idA, final Integer idB) {
+
+		String sql = "select * from tbl_friends where id_user_b = '" + idB
+				+ "' AND is_accept = '" + 0 + "' AND id_user_a = '" + idA + "' ";
+
+		Query query = entityManager.createNativeQuery(sql, Friend.class);
+		return (Friend) query.getSingleResult();
+	}
+
+	//Gửi yêu cầu và chấp nhận lời mời kết bạn
+	@Transactional(rollbackOn = Exception.class)
+	public void saveFriendRequest(Friend friendData) throws Exception {
+		try {
+			friendRepo.save(friendData);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	//Xóa yêu cầu kết bạn
+	@Transactional(rollbackOn = Exception.class)
+	public void deleteFriendRequest(final Integer idA, final Integer idB) {
+		String sql = "delete from tbl_friends where id_user_b = '" + idB
+				+ "' AND is_accept = '" + 0 + "' AND id_user_a = '" + idA + "' ";
+		Query query = entityManager.createNativeQuery(sql);
+		query.executeUpdate();
 	}
 
 	@Transactional(rollbackOn = Exception.class)
@@ -92,6 +132,11 @@ public class UserService {
 		}
 	}
 
+	public List<User> findAllUser() {
+		String sql = "select * from tbl_users";
+		Query query = entityManager.createNativeQuery(sql, Post.class);
+		return query.getResultList();
+	}
 	// SearchByID and isRequest =1 => Tìm bạn của user
 	public List<Friend> findFriendInfo(final int id) {
 		String sql = "select * from tbl_friends where id_user_b = '" + id + "' and is_accept = true";
