@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.web.entities.AjaxResponse;
 import com.web.entities.Post;
+import com.web.entities.Response;
 import com.web.repositories.PostRepo;
 import com.web.services.PostService;
-import com.web.services.ResponseService;
 import com.web.services.UserService;
 
 @RestController
@@ -42,7 +42,7 @@ public class PutPostController extends BaseController{
 		post.setMedia(media);
 		post.setUser(userService.findUserById(id_user));
 		postRepo.save(post);
-		return ResponseEntity.ok(new AjaxResponse(1000, responseService.findResponseByCode(1000).getMessage(), postData));
+		return ResponseEntity.ok(new AjaxResponse(Response.CODE_1000, Response.MESSAGE_1000, postData));
 	}
 
 //  Tìm bài viết của user (riêng từng bài )

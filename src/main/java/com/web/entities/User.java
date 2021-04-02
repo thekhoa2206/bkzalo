@@ -7,6 +7,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -15,9 +17,6 @@ import javax.persistence.Transient;
 @Entity
 @Table(name = "tbl_users")
 public class User extends BaseEntity {
-
-	@Transient
-	private String token;
 
 	@Column(name = "password", length = 100, nullable = false)
 	private String password;
@@ -30,6 +29,9 @@ public class User extends BaseEntity {
 
 	@Column(name = "avatar", length = 100, nullable = false)
 	private String avatar;
+
+	@Transient
+	private String token;
 
 	// 1 user -> N posts
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user" /* tên property user trong class posts */
@@ -74,7 +76,12 @@ public class User extends BaseEntity {
 			, fetch = FetchType.LAZY)
 	private List<Block> blockUser = new ArrayList<Block>();
 
-
+	
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinTable(name = "tbl_role_user", joinColumns = @JoinColumn(name = "id_user"), inverseJoinColumns = @JoinColumn(name = "id_role"))
+	private List<Roles> roles = new ArrayList<Roles>();
+	
+	
 	public String getPassword() {
 		return password;
 	}
@@ -113,6 +120,14 @@ public class User extends BaseEntity {
 
 	public void setToken(String token) {
 		this.token = token;
+	}
+
+	public List<Roles> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(List<Roles> roles) {
+		this.roles = roles;
 	}
 
 }

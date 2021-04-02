@@ -19,6 +19,7 @@ import com.mysql.cj.x.protobuf.MysqlxCrud.Delete;
 import com.web.entities.AjaxResponse;
 import com.web.entities.Chat;
 import com.web.entities.Comment;
+import com.web.entities.Response;
 import com.web.services.ChatService;
 
 @RestController

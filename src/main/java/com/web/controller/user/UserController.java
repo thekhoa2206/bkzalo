@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.web.entities.AjaxResponse;
+import com.web.entities.Response;
 import com.web.entities.User;
 import com.web.repositories.UserRepo;
 import com.web.services.UserService;
@@ -29,6 +30,8 @@ public class UserController extends BaseController {
 	public ResponseEntity<AjaxResponse> get_user_info(@PathVariable("id") int id, @RequestBody User data,
 			final ModelMap model, final HttpServletRequest request, final HttpServletResponse response) {
 		data = userService.findUserById(id);
+		String token = request.getHeader("Authorization");
+		String phone = userService.getPhoneNumberFromToken(token);
 		return ResponseEntity.ok(new AjaxResponse(200, "Success!", data));
 	}
 

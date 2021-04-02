@@ -3,6 +3,8 @@ package com.web.services;
 import java.security.Key;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.crypto.spec.SecretKeySpec;
 import javax.persistence.EntityManager;
@@ -17,10 +19,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.web.entities.Post;
+import com.web.entities.Roles;
 import com.web.entities.User;
 import com.web.repositories.UserRepo;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
@@ -42,12 +46,20 @@ public class UserService {
 		Query query = entityManager.createNativeQuery(sql, User.class);
 		return (User) query.getSingleResult();
 	}
+	
+	public List<Roles> findRoleById(final int id) {
+
+		String sql = "select * from tbl_roles where id = '" + id + "'";
+		Query query = entityManager.createNativeQuery(sql, Roles.class);
+		return query.getResultList();
+	}
 
 	public User finUserByPhone(final String phone) {
 		String sql = "select * from tbl_users where phone = '" + phone + "'";
 		Query query = entityManager.createNativeQuery(sql, User.class);
 		return (User) query.getSingleResult();
 	}
+
 
 	public List<Post> findPostById(final int id) {
 		String sql = "select * from tbl_posts where id = '" + id + "'";
@@ -97,7 +109,7 @@ public class UserService {
 	}
 
 	public String createJWT(String issuer) {
-		String UUID = finUserByPhone(issuer).getName();
+		String UUID =  finUserByPhone(issuer).getPhone();
 		// The JWT signature algorithm we will be using to sign the token
 		SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
@@ -138,5 +150,30 @@ public class UserService {
 			return false;
 		}
 		return false;
+	}
+	
+	// kiểm tra kí tự đặc biệt
+	public boolean getSpecialCharacterCount(String s) {
+		Pattern p = Pattern.compile("[^A-Za-z0-9]");
+		Matcher m = p.matcher(s);
+
+		boolean b = m.find();
+		if (b == true)
+			return false;
+		else
+			return true;
+	}  
+	
+	// lấy phone từ token
+	public String getPhoneNumberFromToken(String jwt) {
+		try {
+			Claims claims = Jwts.parser().setSigningKey(DatatypeConverter.parseBase64Binary(SECRET_KEY))
+					.parseClaimsJws(jwt).getBody();
+
+			return claims.getIssuer();
+
+		} catch (ExpiredJwtException | IllegalArgumentException e) {
+			return null;
+		}
 	}
 }
