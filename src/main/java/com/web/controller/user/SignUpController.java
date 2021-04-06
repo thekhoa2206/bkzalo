@@ -45,7 +45,7 @@ public class SignUpController extends BaseController {
 				}
 
 				if (userService.getSpecialCharacterCount(data.getPassword()) == true) {
-					if (data.getPhone().length() == 10 && data.getPhone().charAt(0) == '0') {
+					if (data.getPhone().length() == 10 && Character.toString(data.getPhone().charAt(0)).equals("0")) {
 						if (data.getPassword().length() >= 6 && data.getPassword().length() <= 10) {
 							data.setRoles(userService.findRoleById(1));
 							userService.saveGuestUser(data);

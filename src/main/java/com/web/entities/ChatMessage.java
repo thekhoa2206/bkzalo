@@ -11,7 +11,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "tbl_chat")
-public class Chat extends BaseEntity {
+public class ChatMessage extends BaseEntity {
 
 	@Column(name = "content", length = 500, nullable = false)
 	private String content;

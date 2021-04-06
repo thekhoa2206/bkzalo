@@ -46,12 +46,12 @@ public class User extends BaseEntity {
 	// 1 user -> N commments
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "userSender" /* tên property user trong class comment */
 			, fetch = FetchType.LAZY)
-	private List<Chat> chatSender = new ArrayList<Chat>();
+	private List<ChatMessage> chatSender = new ArrayList<ChatMessage>();
 
 	// 1 user -> N commments
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "userReceiver" /* tên property user trong class comment */
 			, fetch = FetchType.LAZY)
-	private List<Chat> chatReceiver = new ArrayList<Chat>();
+	private List<ChatMessage> chatReceiver = new ArrayList<ChatMessage>();
 
 	@ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, mappedBy = "like")
 	private List<Post> like = new ArrayList<Post>();
