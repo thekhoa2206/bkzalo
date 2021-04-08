@@ -76,6 +76,26 @@ public class Response {
 	public static final String MESSAGE_1015 = "Password >=6 character <= 10 character";
 	public static final int CODE_1015 = 1015;
 
+	public static final String MESSAGE_1016 = "Phone or password wrong";
+	public static final int CODE_1016 = 1016;
+	
+	public static final String MESSAGE_1017 = "Phone number is not be register";
+	public static final int CODE_1017 = 1017;
+	
+	public static final String MESSAGE_1018 = "Phone number is wrong format";
+	public static final int CODE_1018 = 1018;
+	
+	public static final String MESSAGE_1019 = "Password is wrong format";
+	public static final int CODE_1019 = 1019;
+	
+	public static final String MESSAGE_1020 = "No internet connection ";
+	public static final int CODE_1020 = 1020;
+	
+	public static final String MESSAGE_1021 = "Password is wrong";
+	public static final int CODE_1021 = 1021;
+	
+	
+
 
 
 }

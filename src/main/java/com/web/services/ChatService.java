@@ -10,7 +10,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.web.entities.Chat;
+import com.web.entities.ChatMessage;
 import com.web.repositories.ChatRepo;
 
 @Service
@@ -20,17 +20,17 @@ public class ChatService {
 	@PersistenceContext
 	protected EntityManager entityManager;
 
-	public List<Chat> findChatByUserId(int userId) {
+	public List<ChatMessage> findChatByUserId(int userId) {
 		String sql = "select * from tbl_chat where user_id_sender = '" + userId + "' or user_id_receiver = '" + userId
 				+ "'";
-		Query query = entityManager.createNativeQuery(sql, Chat.class);
+		Query query = entityManager.createNativeQuery(sql, ChatMessage.class);
 		return query.getResultList();
 	}
 
-	public List<Chat> findChatByUserIdAndPartnerId(int userId, int partnerId) {
+	public List<ChatMessage> findChatByUserIdAndPartnerId(int userId, int partnerId) {
 		String sql = "select * from tbl_chat where (user_id_sender = '" + userId + "' and user_id_receiver = '"
 				+ partnerId + "') or (user_id_sender = '" + partnerId + "' and user_id_receiver = '" + userId + "')";
-		Query query = entityManager.createNativeQuery(sql, Chat.class);
+		Query query = entityManager.createNativeQuery(sql, ChatMessage.class);
 		return query.getResultList();
 	}
 

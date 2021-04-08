@@ -1,25 +1,26 @@
 package com.web.controller.user;
 
-import java.util.Date;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 
-import com.web.entities.message.Message;
-import com.web.storage.UserStorage;
+import com.web.entities.ChatMessage;
 
 public class MessageController {
-	@Autowired
-	private SimpMessagingTemplate simpMessagingTemplate;
 
-	@MessageMapping("/chat/{to}")
-	public void sendMessage(@DestinationVariable String to, Message message) {
-		System.out.println("handling send message: " + message + " to: " + to);
-		boolean isExists = UserStorage.getInstance().getUsers().contains(to);
-		if (isExists) {
-			simpMessagingTemplate.convertAndSend("/topic/messages/" + to, message);
-		}
+
+	@MessageMapping("/chat.sendMessage")
+	@SendTo("/topic/publicChatRoom")
+	public ChatMessage sendMessage(@Payload ChatMessage chatMessage) {
+		return chatMessage;
+	}
+
+	@MessageMapping("/chat.addUser")
+	@SendTo("/topic/publicChatRoom")
+	public ChatMessage addUser(@Payload ChatMessage chatMessage, SimpMessageHeaderAccessor headerAccessor) {
+		// Thêm Phone vào web socket session
+		headerAccessor.getSessionAttributes().put("Phone", chatMessage.getUserSender());
+		return chatMessage;
 	}
 }
