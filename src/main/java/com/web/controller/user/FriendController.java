@@ -3,6 +3,7 @@ package com.web.controller.user;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.web.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.ModelMap;
@@ -22,6 +23,8 @@ import com.web.repositories.BlockRepo;
 import com.web.repositories.UserRepo;
 import com.web.services.UserService;
 
+import java.util.List;
+
 @RestController
 public class FriendController {
 	@Autowired
@@ -33,17 +36,37 @@ public class FriendController {
 
 	// Lấy thông tin FriendRequest
 	@RequestMapping(value = { "/get_friend_request_info" }, method = RequestMethod.POST)
-	public ResponseEntity<AjaxResponse> get_friend_request_info(@RequestBody SearchSomethings keyword, final ModelMap model,
+	public ResponseEntity<AjaxResponse> get_friend_request_info(@RequestBody(required = false) SearchSomethings keyword, final ModelMap model,
 			final HttpServletRequest request, final HttpServletResponse response) {
 		System.out.print(keyword.getKeyword());
-		return ResponseEntity.ok(new AjaxResponse(200, "Success!", userService.findFriendRequestById(keyword)));
+		String token = request.getHeader("Authorization");
+		String phone = userService.getPhoneNumberFromToken(token);
+		String id =  Integer.toString(userService.findUserByPhone(phone).getId());
+
+		if(keyword.getKeyword().length()==0){    //Bỏ trống id
+			keyword.setKeyword(id);
+			return ResponseEntity.ok(new AjaxResponse(1000, "Success!", userService.findFriendRequestById(keyword)));
+		}else {							//Truyền vào id
+			User user = userService.findUserById(keyword);
+			if(user.getRoles().get(0).getId()!=1){           //Nếu không phải admin
+				if (keyword.getKeyword()!=id) { //Truyền id của người khác
+					return ResponseEntity.ok(new AjaxResponse(1000, "Fail!"));
+				}else {
+					return ResponseEntity.ok(new AjaxResponse(1000, "Success!", userService.findFriendRequestById(keyword)));
+				}
+			}else{									//Nếu là admin
+				keyword.setKeyword(id);
+				return ResponseEntity.ok(new AjaxResponse(1000, "Success!", userService.findUserById(keyword)));
+			}
+		}
+
 	}
 
 	// Xem danh sách bạn bè
 	@PostMapping(value = { "/get_friend_info/{id}" }, produces = "application/json")
 	public ResponseEntity<AjaxResponse> get_friend_info(@PathVariable("id") int id, final ModelMap model,
 			final HttpServletRequest request, final HttpServletResponse response) {
-		return ResponseEntity.ok(new AjaxResponse(200, "Success!", userService.findFriendInfo(id)));
+		return ResponseEntity.ok(new AjaxResponse(1000, "Success!", userService.findFriendInfo(id)));
 	}
 
 	// Set_block_user
@@ -55,7 +78,7 @@ public class FriendController {
 		blockUser.setId_block_user(userService.findUserById(id_user_block));
 		blockUser.setId_block_user(userService.findUserById(id_block_user));
 		blockRepo.save(blockUser);
-		return ResponseEntity.ok(new AjaxResponse(200, "Block Successfully!", blockUser));
+		return ResponseEntity.ok(new AjaxResponse(1000, "Block Successfully!", blockUser));
 	}
 
 	// Gửi yêu cầu kết bạn
@@ -67,7 +90,7 @@ public class FriendController {
 		friendData.setUserBId(userService.findUserById(idB));
 		friendData.setIsAccept(false);
 		userService.saveFriendRequest(friendData);
-		return ResponseEntity.ok(new AjaxResponse(200, "Success!",friendData));
+		return ResponseEntity.ok(new AjaxResponse(1000, "Success!",friendData));
 	}
 
 
@@ -86,7 +109,7 @@ public class FriendController {
 		}else{
 			userService.saveFriendRequest(friendData);
 		}
-		return ResponseEntity.ok(new AjaxResponse(200, "Success!",friendData));
+		return ResponseEntity.ok(new AjaxResponse(1000, "Success!",friendData));
 	}
 
 	// bỏ block

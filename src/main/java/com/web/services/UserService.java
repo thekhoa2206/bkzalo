@@ -16,6 +16,7 @@ import javax.xml.bind.DatatypeConverter;
 import com.web.common.SearchSomethings;
 import com.web.entities.Friend;
 import com.web.repositories.FriendRepo;
+import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -49,7 +50,13 @@ public class UserService {
 		Query query = entityManager.createNativeQuery(sql, User.class);
 		return (User) query.getSingleResult();
 	}
-<<<<<<< HEAD
+
+	public User findUserById(final SearchSomethings searchSomethings) {
+
+		String sql = "select * from tbl_users where id = '" + searchSomethings.getKeyword() + "'";
+		Query query = entityManager.createNativeQuery(sql, User.class);
+		return (User) query.getSingleResult();
+	}
 	
 	public List<Roles> findRoleById(final int id) {
 
@@ -57,16 +64,15 @@ public class UserService {
 		Query query = entityManager.createNativeQuery(sql, Roles.class);
 		return query.getResultList();
 	}
-=======
+
 //	public User findUserById(final int id1,final int id2) {
 //
 //		String sql = "select * from tbl_users where id = '" + id1 + "' or id ='"+id2+"' ";
 //		Query query = entityManager.createNativeQuery(sql, User.class);
 //		return (User) query.getSingleResult();
 //	}
->>>>>>> c98aa59413f4e27105fe6be3c39e73e3bfee8247
 
-	public User finUserByPhone(final String phone) {
+	public User findUserByPhone(final String phone) {
 		String sql = "select * from tbl_users where phone = '" + phone + "'";
 		Query query = entityManager.createNativeQuery(sql, User.class);
 		return (User) query.getSingleResult();
@@ -83,6 +89,15 @@ public class UserService {
 //		String sql = "select * from tbl_friends AS t1, tbl_users AS t2 where t1.id_user_b = '" + id + "' AND t2.id = '" + t1.id_user_a + "' ";
 //		String sql = "select * from tbl_friends , tbl_users where tbl_friends.id_user_b = '" + id + "' AND tbl_users.id = '" + tbl_friends.id_user_a + "' ";
 		String sql = "select * from tbl_friends where id_user_b = '" + searchSomethings.getKeyword()
+				+ "' AND is_accept = '" + 0 + "' ";
+
+		Query query = entityManager.createNativeQuery(sql, Friend.class);
+		return query.getResultList();
+	}
+
+	public List<Friend> findFriendRequestById(final int id) {
+
+		String sql = "select * from tbl_friends where id_user_b = '" + id
 				+ "' AND is_accept = '" + 0 + "' ";
 
 		Query query = entityManager.createNativeQuery(sql, Friend.class);
@@ -153,8 +168,28 @@ public class UserService {
 		}
 	}
 
+	// lấy phone từ token
+	public String getPhoneNumberFromToken(String jwt) {
+		try {
+			Claims claims = Jwts.parser().setSigningKey(DatatypeConverter.parseBase64Binary(SECRET_KEY))
+					.parseClaimsJws(jwt).getBody();
+
+			return claims.getIssuer();
+
+		} catch (ExpiredJwtException | IllegalArgumentException e) {
+			return null;
+		}
+	}
+
+	public User isUserInRole(String id){
+//		and roles = '" + 1 + "'
+		String sql = "select * from tbl_users where id = '" + id + "' ";
+		Query query = entityManager.createNativeQuery(sql, User.class);
+		return (User) query.getSingleResult();
+	}
+
 	public String createJWT(String issuer) {
-		String UUID =  finUserByPhone(issuer).getPhone();
+		String UUID = findUserByPhone(issuer).getName();
 		// The JWT signature algorithm we will be using to sign the token
 		SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
@@ -208,17 +243,5 @@ public class UserService {
 		else
 			return true;
 	}  
-	
-	// lấy phone từ token
-	public String getPhoneNumberFromToken(String jwt) {
-		try {
-			Claims claims = Jwts.parser().setSigningKey(DatatypeConverter.parseBase64Binary(SECRET_KEY))
-					.parseClaimsJws(jwt).getBody();
 
-			return claims.getIssuer();
-
-		} catch (ExpiredJwtException | IllegalArgumentException e) {
-			return null;
-		}
-	}
 }
