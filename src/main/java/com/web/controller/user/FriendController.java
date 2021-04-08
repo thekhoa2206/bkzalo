@@ -56,7 +56,7 @@ public class FriendController {
 				}
 			}else{									//Nếu là admin
 				keyword.setKeyword(id);
-				return ResponseEntity.ok(new AjaxResponse(1000, "Success!", userService.findUserById(keyword)));
+				return ResponseEntity.ok(new AjaxResponse(1000, "Success!", userService.findFriendRequestById(keyword)));
 			}
 		}
 

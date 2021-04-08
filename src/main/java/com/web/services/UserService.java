@@ -16,7 +16,6 @@ import javax.xml.bind.DatatypeConverter;
 import com.web.common.SearchSomethings;
 import com.web.entities.Friend;
 import com.web.repositories.FriendRepo;
-import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
