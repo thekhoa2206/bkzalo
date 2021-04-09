@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.20, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.23, for Win64 (x86_64)
 --
 -- Host: 127.0.0.1    Database: bkzalo
 -- ------------------------------------------------------
--- Server version	8.0.20
+-- Server version	8.0.23
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -148,7 +148,7 @@ CREATE TABLE `tbl_friends` (
   KEY `id_friends_user_2_idx` (`id_user_b`),
   CONSTRAINT `id_friends_user` FOREIGN KEY (`id_user_a`) REFERENCES `tbl_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `id_friends_user_2` FOREIGN KEY (`id_user_b`) REFERENCES `tbl_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -157,6 +157,7 @@ CREATE TABLE `tbl_friends` (
 
 LOCK TABLES `tbl_friends` WRITE;
 /*!40000 ALTER TABLE `tbl_friends` DISABLE KEYS */;
+INSERT INTO `tbl_friends` VALUES (1,4,1,0),(2,4,2,0),(1,3,3,0),(2,3,4,0),(1,2,5,0);
 /*!40000 ALTER TABLE `tbl_friends` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -242,6 +243,32 @@ LOCK TABLES `tbl_posts_images` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `tbl_response`
+--
+
+DROP TABLE IF EXISTS `tbl_response`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tbl_response` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `code` int DEFAULT NULL,
+  `message` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  `note` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tbl_response`
+--
+
+LOCK TABLES `tbl_response` WRITE;
+/*!40000 ALTER TABLE `tbl_response` DISABLE KEYS */;
+INSERT INTO `tbl_response` VALUES (1,1000,'OK',NULL),(2,9992,'Post is not existed','Bài viết không tồn tại'),(3,9993,'Code verify is incorrect','Mã xác thực không đúng'),(4,9994,'No Data or end of list data','Không có dữ liệu hoặc không còn dữ liệu'),(5,9995,'User is not validate','Không có người dùng này'),(6,9996,'User existed','Người dùng này đã tồn tại'),(7,9997,'Method is invalid','Phương thức không đúng'),(8,9998,'Token is invalid','Sai Token'),(9,9999,'Exception error','Lỗi exception'),(10,1001,'Can not connect to DB','Lỗi mất kết nối DB/ hoặc thực thi câu SQL'),(11,1002,'Parameter is not enought','Số lượng Parameter không đầy đủ'),(12,1003,'Parameter type is invalid','Kiểu tham số không đúng đắn'),(13,1004,'Parameter value is invalid','Giá trị tham số không hợp lệ'),(14,1005,'Unknown error','Unknown error'),(15,1006,'File size is too big','Cỡ file vượt mức cho phép'),(16,1007,'Upload File Failed!','upload thất bại'),(17,1008,'Maximum number of images','Số lượng images vượt quá quy định'),(18,1009,'Not access','Không có quyền truy cập tài nguyên'),(19,1010,'Action has been done previously by this user','hành động đã được người dùng thực hiện trước đây');
+/*!40000 ALTER TABLE `tbl_response` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `tbl_role_user`
 --
 
@@ -264,7 +291,7 @@ CREATE TABLE `tbl_role_user` (
 
 LOCK TABLES `tbl_role_user` WRITE;
 /*!40000 ALTER TABLE `tbl_role_user` DISABLE KEYS */;
-INSERT INTO `tbl_role_user` VALUES (1,1),(2,2),(2,3);
+INSERT INTO `tbl_role_user` VALUES (1,1),(2,2),(2,3),(1,4);
 /*!40000 ALTER TABLE `tbl_role_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -306,7 +333,7 @@ CREATE TABLE `tbl_users` (
   `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
   `avatar` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -315,17 +342,9 @@ CREATE TABLE `tbl_users` (
 
 LOCK TABLES `tbl_users` WRITE;
 /*!40000 ALTER TABLE `tbl_users` DISABLE KEYS */;
-INSERT INTO `tbl_users` VALUES (1,'092872121','12334','nguyen van a','avatar.img'),(2,'092231321','1233223','nguyenvan1','avatar.img'),(3,'0923872132','1233432322','dovan','avatar.img');
+INSERT INTO `tbl_users` VALUES (1,'092872121','12334','bui','avatar.img'),(2,'092231321','1233223','nguyen','avatar.img'),(3,'0923872132','1233432322','vu','avatar.img'),(4,'0904515270','123456','vo',NULL);
 /*!40000 ALTER TABLE `tbl_users` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Dumping events for database 'bkzalo'
---
-
---
--- Dumping routines for database 'bkzalo'
---
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -336,4 +355,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-04-02 17:14:57
+-- Dump completed on 2021-04-09 14:17:47

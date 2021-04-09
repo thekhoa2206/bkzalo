@@ -45,18 +45,18 @@ public class FriendController {
 
 		if(keyword.getKeyword().length()==0){    //Bỏ trống id
 			keyword.setKeyword(id);
-			return ResponseEntity.ok(new AjaxResponse(1000, "Success!", userService.findFriendRequestById(keyword)));
+			return ResponseEntity.ok(new AjaxResponse(1000, "Success!", userService.findFriendRequestById(Integer.parseInt(keyword.getKeyword()))));
 		}else {							//Truyền vào id
-			User user = userService.findUserById(keyword);
+			User user = userService.findUserById(Integer.parseInt(keyword.getKeyword()));
 			if(user.getRoles().get(0).getId()!=1){           //Nếu không phải admin
-				if (keyword.getKeyword()!=id) { //Truyền id của người khác
+				if (keyword.getKeyword().compareTo(id)!=1) { //Truyền id của người khác
 					return ResponseEntity.ok(new AjaxResponse(1000, "Fail!"));
 				}else {
-					return ResponseEntity.ok(new AjaxResponse(1000, "Success!", userService.findFriendRequestById(keyword)));
+					return ResponseEntity.ok(new AjaxResponse(1000, "Success!", userService.findFriendRequestById(Integer.parseInt(keyword.getKeyword()))));
 				}
 			}else{									//Nếu là admin
 				keyword.setKeyword(id);
-				return ResponseEntity.ok(new AjaxResponse(1000, "Success!", userService.findFriendRequestById(keyword)));
+				return ResponseEntity.ok(new AjaxResponse(1000, "Success!", userService.findFriendRequestById(Integer.parseInt(keyword.getKeyword()))));
 			}
 		}
 

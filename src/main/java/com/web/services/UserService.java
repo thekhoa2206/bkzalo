@@ -49,13 +49,6 @@ public class UserService {
 		Query query = entityManager.createNativeQuery(sql, User.class);
 		return (User) query.getSingleResult();
 	}
-
-	public User findUserById(final SearchSomethings searchSomethings) {
-
-		String sql = "select * from tbl_users where id = '" + searchSomethings.getKeyword() + "'";
-		Query query = entityManager.createNativeQuery(sql, User.class);
-		return (User) query.getSingleResult();
-	}
 	
 	public List<Roles> findRoleById(final int id) {
 
