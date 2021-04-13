@@ -3,3 +3,4 @@
 *.xml
 com.web.bkzalo.iml
 src/main/java/com/web/conf/JPAConf.java
+src/main/java/com/web/conf/JPAConf.java

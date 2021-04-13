@@ -11,8 +11,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+<<<<<<< HEAD
 import com.web.Response.AjaxResponse;
 import com.web.entities.Response;
+=======
+import com.web.entities.AjaxResponse;
+>>>>>>> a6aefe9af6e897c4b4cd1e5266b3bcf23dd109af
 import com.web.entities.User;
 import com.web.services.UserService;
 
@@ -26,45 +30,17 @@ public class LoginController {
 
 	public ResponseEntity<AjaxResponse> login(@RequestBody User data, final ModelMap model,
 			final HttpServletRequest request, final HttpServletResponse response) throws Exception {
-		if (data.getPhone() != null && data.getPassword() != null) {
-			if (data.getPhone() != null) {
-				if (data.getPassword() != null) {
-					if (data.getPhone().length() == 10 && Character.toString(data.getPhone().charAt(0)).equals("0")) {
-						if (userService.getSpecialCharacterCount(data.getPassword()) == true
-								&& data.getPassword().length() <= 10 && data.getPassword().length() >= 6
-								&& data.getPassword().compareTo(data.getPhone()) != 0) {
-							if (userService.finUserByPhone(data.getPhone()) != null) {
-								if (data.getPassword()
-										.compareTo(userService.finUserByPhone(data.getPhone()).getPassword()) == 0) {
-									data = userService.finUserByPhone(data.getPhone());
-									data.setToken(userService.createJWT(data.getPhone()));
-									return ResponseEntity
-											.ok(new AjaxResponse(Response.CODE_1000, Response.MESSAGE_1000, data));
-								} else {
-									return ResponseEntity
-											.ok(new AjaxResponse(Response.CODE_1021, Response.MESSAGE_1021));
-								}
-							} else {
-								return ResponseEntity.ok(new AjaxResponse(Response.CODE_9995, Response.MESSAGE_9995));
-							}
-
-						} else {
-							return ResponseEntity.ok(new AjaxResponse(Response.CODE_1019, Response.MESSAGE_1019));
-						}
-
-					} else {
-						return ResponseEntity.ok(new AjaxResponse(Response.CODE_1018, Response.MESSAGE_1018));
-					}
-				} else {
-					return ResponseEntity.ok(new AjaxResponse(Response.CODE_1019, Response.MESSAGE_1019));
-				}
-			} else {
-				return ResponseEntity.ok(new AjaxResponse(Response.CODE_1018, Response.MESSAGE_1018));
-			}
+		String phone = data.getPhone();
+		if (userService.findUserByPhone(phone).getPassword().compareTo(data.getPassword()) == 0) {
+			data = userService.findUserByPhone(phone);
+			data.setToken(userService.createJWT(data.getPhone()));
+			System.out.println(userService.createJWT(data.getPhone()));
+			return ResponseEntity.ok(new AjaxResponse(200, "Login success!!", data));
 		} else {
-			return ResponseEntity.ok(new AjaxResponse(Response.CODE_1018, Response.MESSAGE_1018));
+			data.setPassword(null);
+			data.setPhone(null);
+			return ResponseEntity.ok(new AjaxResponse(200, "Login fail!!", data));
 		}
-
 	}
 
 //logout

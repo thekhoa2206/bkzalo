@@ -35,7 +35,7 @@ public class WebSocketEventListener {
 		if (phone != null) {
 			logger.info("User Disconnected : " + phone);
 			ChatMessage chatMessage = new ChatMessage();
-			chatMessage.setUserSender(userService.finUserByPhone(phone));
+			chatMessage.setUserSender(userService.findUserByPhone(phone));
 			messagingTemplate.convertAndSend("/topic/publicChatRoom", chatMessage);
 		}
 	}
