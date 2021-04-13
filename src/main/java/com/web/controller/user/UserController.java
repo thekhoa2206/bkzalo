@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.web.entities.AjaxResponse;
+import com.web.Response.AjaxResponse;
 import com.web.entities.Response;
 import com.web.entities.User;
 import com.web.repositories.UserRepo;
@@ -25,7 +25,7 @@ public class UserController extends BaseController {
 	@Autowired
 	public UserService userService;
 
-//	Lấy thông tin User
+//Lấy thông tin User
 	@GetMapping(value = { "/get_user_info/{id}" }, produces = "application/json")
 	public ResponseEntity<AjaxResponse> get_user_info(@PathVariable("id") int id, @RequestBody User data,
 			final ModelMap model, final HttpServletRequest request, final HttpServletResponse response) {
@@ -35,7 +35,7 @@ public class UserController extends BaseController {
 		return ResponseEntity.ok(new AjaxResponse(200, "Success!", data));
 	}
 
-//	Sửa thông tin của user
+//Sửa thông tin của user
 	@PostMapping(value = { "/set_user_info/{id}" }, produces = "application/json")
 	public ResponseEntity<AjaxResponse> set_user_info(@PathVariable("id") int id, @RequestBody User data,
 			final ModelMap model, final HttpServletRequest request, final HttpServletResponse response) {

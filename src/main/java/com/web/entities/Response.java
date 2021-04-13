@@ -94,6 +94,13 @@ public class Response {
 	public static final String MESSAGE_1021 = "Password is wrong";
 	public static final int CODE_1021 = 1021;
 	
+	public static final String MESSAGE_1022 = "Post exceed 500 words";
+	public static final int CODE_1022 = 1022;
+	
+	public static final String MESSAGE_1023 = "Posts are only images or video";
+	public static final int CODE_1023= 1023;
+	
+	
 	
 
 

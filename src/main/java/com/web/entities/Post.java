@@ -27,6 +27,12 @@ public class Post extends BaseEntity {
 	@Column(name = "create_date", nullable = true)
 	private LocalDateTime createdDate;
 
+	@Column(name = "can_comment", nullable = false)
+	private boolean canComment;
+
+	@Column(name = "state", nullable = false)
+	private boolean state;
+
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "user_id")
 	private User user;
@@ -37,10 +43,10 @@ public class Post extends BaseEntity {
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "post"/* tên property product trong class ProductImages */
 			, fetch = FetchType.LAZY, orphanRemoval = true)
-	private List<PostImgaes> postImages = new ArrayList<PostImgaes>();
+	private List<PostImages> image = new ArrayList<PostImages>();
 
-//	@ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, mappedBy = "post")
-//	private List<Comment> comment = new ArrayList<Comment>();
+	@ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, mappedBy = "post")
+	private List<Comment> comment = new ArrayList<Comment>();
 
 	public String getContent() {
 		return content;
@@ -81,5 +87,32 @@ public class Post extends BaseEntity {
 	public void setLike(List<User> like) {
 		this.like = like;
 	}
+
+	public List<PostImages> getImage() {
+		return image;
+	}
+
+	public void setImage(List<PostImages> image) {
+		this.image = image;
+	}
+
+	public boolean getCanComment() {
+		return canComment;
+	}
+
+	public void setCanComment(boolean canComment) {
+		this.canComment = canComment;
+	}
+
+	public boolean getState() {
+		return state;
+	}
+
+	public void setState(boolean state) {
+		this.state = state;
+	}
+
+	
+	
 
 }

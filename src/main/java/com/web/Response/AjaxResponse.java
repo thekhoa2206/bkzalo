@@ -1,4 +1,4 @@
-package com.web.entities;
+package com.web.Response;
 
 public class AjaxResponse {
 	private int code;

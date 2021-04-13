@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.web.Response.AjaxResponse;
 import com.web.common.SearchSomethings;
-import com.web.entities.AjaxResponse;
 import com.web.entities.Block;
 import com.web.entities.Friend;
 import com.web.repositories.BlockRepo;

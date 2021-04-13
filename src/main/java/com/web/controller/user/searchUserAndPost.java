@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.web.Response.AjaxResponse;
 import com.web.common.SearchSomethings;
-import com.web.entities.AjaxResponse;
 import com.web.repositories.PostRepo;
 import com.web.services.PostService;
 import com.web.services.UserService;

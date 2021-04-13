@@ -12,12 +12,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import com.web.common.SearchSomethings;
+import com.web.entities.Comment;
 import com.web.entities.Post;
 import com.web.entities.User;
 import com.web.repositories.PostRepo;
 
 @Service
 public class PostService {
+	public final char SPACE = ' ';
+	public final char TAB = '\t';
+	public final char BREAK_LINE = '\n';
 
 	@Autowired
 	public PostRepo postRepo;
@@ -35,11 +39,24 @@ public class PostService {
 		Query query = entityManager.createNativeQuery(sql, Post.class);
 		return query.getResultList();
 	}
+	
+	public List<Post> findAllPostUserId(final int id) {
+		String sql = "select * from tbl_posts where user_id ='"+ id +"'";
+		Query query = entityManager.createNativeQuery(sql, Post.class);
+		return query.getResultList();
+	}
+
+	public List<Comment> findAllCommentByIdPost(int idPost) {
+		String sql = "select id,user_id, content, create_date from tbl_comment, tbl_comment_post where tbl_comment_post.id_post ='"
+				+ idPost + "' and tbl_comment_post.id_comment = tbl_comment.id";
+		Query query = entityManager.createNativeQuery(sql, Comment.class);
+		return query.getResultList();
+	}
 
 	public void deletePostById(@PathVariable int id) {
 		postRepo.deleteById(id);
 	}
-	
+
 //	seachPost
 	@SuppressWarnings("unchecked")
 	public List<Post> search(final SearchSomethings searchSomethings) {
@@ -49,12 +66,13 @@ public class PostService {
 		Query query = entityManager.createQuery(jpql, Post.class);
 		return query.getResultList();
 	}
+
 //	searchUser
 	@SuppressWarnings("unchecked")
 	public List<User> searchUser(final SearchSomethings searchSomethings) {
 
-		String jpql = "Select p from User p where CONCAT(p.phone,' ', p.name) LIKE '%"
-				+ searchSomethings.getKeyword() + "%'";
+		String jpql = "Select p from User p where CONCAT(p.phone,' ', p.name) LIKE '%" + searchSomethings.getKeyword()
+				+ "%'";
 		Query query = entityManager.createQuery(jpql, User.class);
 		return query.getResultList();
 	}
@@ -71,5 +89,26 @@ public class PostService {
 		} catch (Exception e) {
 			throw e;
 		}
+	}
+
+	// Hàm đếm số từ trong chuỗi
+	public int countWords(String input) {
+		if (input == null) {
+			return -1;
+		}
+		int count = 0;
+		int size = input.length();
+		boolean notCounted = true;
+		for (int i = 0; i < size; i++) {
+			if (input.charAt(i) != SPACE && input.charAt(i) != TAB && input.charAt(i) != BREAK_LINE) {
+				if (notCounted) {
+					count++;
+					notCounted = false;
+				}
+			} else {
+				notCounted = true;
+			}
+		}
+		return count;
 	}
 }
