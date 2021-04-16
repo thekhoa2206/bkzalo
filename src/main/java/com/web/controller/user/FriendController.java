@@ -36,27 +36,26 @@ public class FriendController {
 
 	// Lấy thông tin FriendRequest
 	@RequestMapping(value = { "/get_friend_request_info" }, method = RequestMethod.POST)
-	public ResponseEntity<AjaxResponse> get_friend_request_info(@RequestBody(required = false) SearchSomethings keyword, final ModelMap model,
+	public ResponseEntity<AjaxResponse> get_friend_request_info(@RequestBody(required = false) SearchSomethings keyword,@RequestBody int index,@RequestBody int count, final ModelMap model,
 			final HttpServletRequest request, final HttpServletResponse response) {
-		System.out.print(keyword.getKeyword());
 		String token = request.getHeader("Authorization");
 		String phone = userService.getPhoneNumberFromToken(token);
 		String id =  Integer.toString(userService.findUserByPhone(phone).getId());
 
 		if(keyword.getKeyword().length()==0){    //Bỏ trống id
 			keyword.setKeyword(id);
-			return ResponseEntity.ok(new AjaxResponse(1000, "Success!", userService.findFriendRequestById(Integer.parseInt(keyword.getKeyword()))));
+			return ResponseEntity.ok(new AjaxResponse(1000, "OK", userService.findFriendRequestById(Integer.parseInt(keyword.getKeyword()))));
 		}else {							//Truyền vào id
-			User user = userService.findUserById(Integer.parseInt(keyword.getKeyword()));
+			User user = userService.findUserById(Integer.parseInt(id));
 			if(user.getRoles().get(0).getId()!=1){           //Nếu không phải admin
-				if (keyword.getKeyword().compareTo(id)!=1) { //Truyền id của người khác
-					return ResponseEntity.ok(new AjaxResponse(1000, "Fail!"));
+				if (keyword.getKeyword().compareTo(id)!=0) { //Truyền id của người khác
+					return ResponseEntity.ok(new AjaxResponse(1004, "Parameter value is invalid"));
 				}else {
-					return ResponseEntity.ok(new AjaxResponse(1000, "Success!", userService.findFriendRequestById(Integer.parseInt(keyword.getKeyword()))));
+					return ResponseEntity.ok(new AjaxResponse(1000, "OK", userService.findFriendRequestById(Integer.parseInt(keyword.getKeyword()))));
 				}
 			}else{									//Nếu là admin
-				keyword.setKeyword(id);
-				return ResponseEntity.ok(new AjaxResponse(1000, "Success!", userService.findFriendRequestById(Integer.parseInt(keyword.getKeyword()))));
+				keyword.setKeyword(keyword.getKeyword());
+				return ResponseEntity.ok(new AjaxResponse(1000, "OK", userService.findFriendRequestById(Integer.parseInt(keyword.getKeyword()))));
 			}
 		}
 
@@ -66,7 +65,7 @@ public class FriendController {
 	@PostMapping(value = { "/get_friend_info/{id}" }, produces = "application/json")
 	public ResponseEntity<AjaxResponse> get_friend_info(@PathVariable("id") int id, final ModelMap model,
 			final HttpServletRequest request, final HttpServletResponse response) {
-		return ResponseEntity.ok(new AjaxResponse(1000, "Success!", userService.findFriendInfo(id)));
+		return ResponseEntity.ok(new AjaxResponse(1000, "OK", userService.findFriendInfo(id)));
 	}
 
 	// Set_block_user
@@ -90,7 +89,7 @@ public class FriendController {
 		friendData.setUserBId(userService.findUserById(idB));
 		friendData.setIsAccept(false);
 		userService.saveFriendRequest(friendData);
-		return ResponseEntity.ok(new AjaxResponse(1000, "Success!",friendData));
+		return ResponseEntity.ok(new AjaxResponse(1000, "OK",friendData));
 	}
 
 
@@ -109,7 +108,7 @@ public class FriendController {
 		}else{
 			userService.saveFriendRequest(friendData);
 		}
-		return ResponseEntity.ok(new AjaxResponse(1000, "Success!",friendData));
+		return ResponseEntity.ok(new AjaxResponse(1000, "OK",friendData));
 	}
 
 	// bỏ block

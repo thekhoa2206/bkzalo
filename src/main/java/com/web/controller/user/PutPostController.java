@@ -52,7 +52,7 @@ public class PutPostController extends BaseController {
 						post.setContent(postData.getContent());
 						post.setMedia(postData.getMedia());
 						post.setCreatedDate(java.time.LocalDateTime.now());
-						post.setUser(userService.finUserByPhone(phone));
+						post.setUser(userService.findUserByPhone(phone));
 						postRepo.save(post);
 						return ResponseEntity.ok(new AjaxResponse(Response.CODE_1000, Response.MESSAGE_1000, postData));
 					} else {
