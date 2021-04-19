@@ -52,7 +52,7 @@ public class PutPostController extends BaseController {
 						post.setContent(postData.getContent());
 						post.setMedia(postData.getMedia());
 						post.setCreatedDate(java.time.LocalDateTime.now());
-						post.setUser(userService.finUserByPhone(phone));
+						post.setUser(userService.findUserByPhone(phone));
 						postRepo.save(post);
 						return ResponseEntity.ok(new AjaxResponse(Response.CODE_1000, Response.MESSAGE_1000, postData));
 					} else {
@@ -103,20 +103,18 @@ public class PutPostController extends BaseController {
 		List<Post> data = postRepo.findAll();
 
 		if (phone != null) {
-
-			if (data.size() < count) {
+			int last = index + count;
+			int a = 0;
+			if (data.size() < last) {
 				for (int i = index; i < data.size(); i++) {
 					postData.add(data.get(i));
-					System.out.println(postData.get(i));
-
 				}
 			} else {
-				for (int i = index; i < count; i++) {
+				for (int i = index; i < last; i++) {
 					postData.add(data.get(i));
-					System.out.println(postData.get(i));
 				}
 			}
-			lastId = postData.get(postData.size()-1).getId();
+			lastId = postData.get(postData.size() - 1).getId();
 
 			return ResponseEntity.ok(new PostResponse(Response.CODE_1000, Response.MESSAGE_1000, postData, lastId));
 		} else {

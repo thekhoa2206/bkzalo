@@ -11,12 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-<<<<<<< HEAD
 import com.web.Response.AjaxResponse;
-import com.web.entities.Response;
-=======
-import com.web.entities.AjaxResponse;
->>>>>>> a6aefe9af6e897c4b4cd1e5266b3bcf23dd109af
 import com.web.entities.User;
 import com.web.services.UserService;
 
