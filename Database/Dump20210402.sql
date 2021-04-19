@@ -148,7 +148,7 @@ CREATE TABLE `tbl_friends` (
   KEY `id_friends_user_2_idx` (`id_user_b`),
   CONSTRAINT `id_friends_user` FOREIGN KEY (`id_user_a`) REFERENCES `tbl_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `id_friends_user_2` FOREIGN KEY (`id_user_b`) REFERENCES `tbl_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -157,7 +157,7 @@ CREATE TABLE `tbl_friends` (
 
 LOCK TABLES `tbl_friends` WRITE;
 /*!40000 ALTER TABLE `tbl_friends` DISABLE KEYS */;
-INSERT INTO `tbl_friends` VALUES (1,4,1,0),(2,4,2,0),(1,3,3,0),(2,3,4,0),(1,2,5,0);
+INSERT INTO `tbl_friends` VALUES (1,4,1,0),(2,4,2,0),(1,3,3,0),(2,3,4,0),(1,2,5,0),(4,3,8,0),(4,3,9,0);
 /*!40000 ALTER TABLE `tbl_friends` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -201,10 +201,12 @@ CREATE TABLE `tbl_posts` (
   `content` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
   `media` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
   `create_date` datetime DEFAULT NULL,
+  `can_comment` tinyint(1) DEFAULT '1',
+  `state` tinyint(1) DEFAULT '1',
   PRIMARY KEY (`id`),
   KEY `id_user_post_idx` (`user_id`),
   CONSTRAINT `id_user_post` FOREIGN KEY (`user_id`) REFERENCES `tbl_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -213,7 +215,7 @@ CREATE TABLE `tbl_posts` (
 
 LOCK TABLES `tbl_posts` WRITE;
 /*!40000 ALTER TABLE `tbl_posts` DISABLE KEYS */;
-INSERT INTO `tbl_posts` VALUES (1,1,'Khoa','Hieu',NULL),(2,2,'Noi dung','media',NULL);
+INSERT INTO `tbl_posts` VALUES (1,1,'Khoa','Hieu',NULL,1,1),(2,2,'Noi dung','media',NULL,1,1),(3,3,'abc','media',NULL,1,1),(4,4,'xyz','media',NULL,1,1),(8,4,'media',NULL,'2021-04-16 14:32:29',0,0),(9,4,'bóng đá Việt Nam',NULL,'2021-04-16 14:36:02',0,0);
 /*!40000 ALTER TABLE `tbl_posts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -291,7 +293,7 @@ CREATE TABLE `tbl_role_user` (
 
 LOCK TABLES `tbl_role_user` WRITE;
 /*!40000 ALTER TABLE `tbl_role_user` DISABLE KEYS */;
-INSERT INTO `tbl_role_user` VALUES (1,1),(2,2),(2,3),(1,4);
+INSERT INTO `tbl_role_user` VALUES (1,1),(2,2),(2,3),(1,4),(1,5);
 /*!40000 ALTER TABLE `tbl_role_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -333,7 +335,7 @@ CREATE TABLE `tbl_users` (
   `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
   `avatar` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -342,7 +344,7 @@ CREATE TABLE `tbl_users` (
 
 LOCK TABLES `tbl_users` WRITE;
 /*!40000 ALTER TABLE `tbl_users` DISABLE KEYS */;
-INSERT INTO `tbl_users` VALUES (1,'092872121','12334','bui','avatar.img'),(2,'092231321','1233223','nguyen','avatar.img'),(3,'0923872132','1233432322','vu','avatar.img'),(4,'0904515270','123456','vo',NULL);
+INSERT INTO `tbl_users` VALUES (1,'092872121','12334','bui','avatar.img'),(2,'092231321','1233223','nguyen','avatar.img'),(3,'0923872132','1233432322','vu','avatar.img'),(4,'0904515270','123456','vo',NULL),(5,'0912345678','123456','tran',NULL);
 /*!40000 ALTER TABLE `tbl_users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -355,4 +357,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-04-09 14:17:47
+-- Dump completed on 2021-04-16 19:34:17

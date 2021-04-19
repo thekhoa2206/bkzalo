@@ -87,9 +87,18 @@ public class UserService {
 		return query.getResultList();
 	}
 
-	public List<Friend> findFriendRequestById(final int id) {
+	public List<Friend> findFriendRequestByIdB(final int id) {
 
 		String sql = "select * from tbl_friends where id_user_b = '" + id
+				+ "' AND is_accept = '" + 0 + "' ";
+
+		Query query = entityManager.createNativeQuery(sql, Friend.class);
+		return query.getResultList();
+	}
+
+	public List<Friend> findFriendRequestByIdA(final int id) {
+
+		String sql = "select * from tbl_friends where id_user_a = '" + id
 				+ "' AND is_accept = '" + 0 + "' ";
 
 		Query query = entityManager.createNativeQuery(sql, Friend.class);
