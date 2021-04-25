@@ -6,6 +6,8 @@ public class PostResponse extends AjaxResponse {
 	
 	private int lastId;
 
+	private Object data;
+
 	public PostResponse(int code, String message, Object data, int comment) {
 		super(code, message, data);
 		this.comment = comment;

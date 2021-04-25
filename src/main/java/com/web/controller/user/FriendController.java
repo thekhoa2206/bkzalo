@@ -3,8 +3,8 @@ package com.web.controller.user;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.web.entities.Response;
-import com.web.entities.User;
+import com.web.Response.UserResponse;
+import com.web.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.ModelMap;
@@ -18,12 +18,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.web.Response.AjaxResponse;
 import com.web.common.SearchSomethings;
-import com.web.entities.Block;
-import com.web.entities.Friend;
 import com.web.repositories.BlockRepo;
 import com.web.repositories.UserRepo;
 import com.web.services.UserService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -36,37 +35,57 @@ public class FriendController {
 	BlockRepo blockRepo;
 
 	// Lấy thông tin FriendRequest
-	@RequestMapping(value = { "/get_friend_request_info" }, method = RequestMethod.POST)
-	public ResponseEntity<AjaxResponse> get_friend_request_info(@RequestBody(required = false) SearchSomethings keyword,@RequestBody int index,@RequestBody int count, final ModelMap model,
+	@RequestMapping(value = { "/get_requested_friend" }, method = RequestMethod.POST)
+	public ResponseEntity<AjaxResponse> get_friend_request_info(@RequestParam Integer user_id,@RequestParam int index,@RequestParam int count, final ModelMap model,
 			final HttpServletRequest request, final HttpServletResponse response) {
 		String token = request.getHeader("Authorization");
 		String phone = userService.getPhoneNumberFromToken(token);
-		String id =  Integer.toString(userService.findUserByPhone(phone).getId());
+		int id = userService.findUserByPhone(phone).getId();
 
-		if(keyword.getKeyword().length()==0){    //Bỏ trống id
-			keyword.setKeyword(id);
-			return ResponseEntity.ok(new AjaxResponse(1000, "OK", userService.findFriendRequestByIdB(Integer.parseInt(keyword.getKeyword()))));
+		if(user_id==null){    //Bỏ trống id
+			return ResponseEntity.ok(new AjaxResponse(Response.CODE_1000, Response.MESSAGE_1000, userService.findFriendRequestByIdB(id)));
 		}else {							//Truyền vào id
-			User user = userService.findUserById(Integer.parseInt(id));
+			User user = userService.findUserById(id);
 			if(user.getRoles().get(0).getId()!=1){           //Nếu không phải admin
-				if (keyword.getKeyword().compareTo(id)!=0) { //Truyền id của người khác
+				if (user_id.compareTo(id)!=0) { //Truyền id của người khác
 					return ResponseEntity.ok(new AjaxResponse(1004, "Parameter value is invalid"));
 				}else {
-					return ResponseEntity.ok(new AjaxResponse(1000, "OK", userService.findFriendRequestByIdB(Integer.parseInt(keyword.getKeyword()))));
+					return ResponseEntity.ok(new AjaxResponse(Response.CODE_1000, Response.MESSAGE_1000, userService.findFriendRequestByIdB(user_id)));
 				}
 			}else{									//Nếu là admin
-				keyword.setKeyword(keyword.getKeyword());
-				return ResponseEntity.ok(new AjaxResponse(1000, "OK", userService.findFriendRequestByIdB(Integer.parseInt(keyword.getKeyword()))));
+
+				return ResponseEntity.ok(new AjaxResponse(Response.CODE_1000, Response.MESSAGE_1000, userService.findFriendRequestByIdB(user_id)));
 			}
 		}
 
 	}
 
 	// Xem danh sách bạn bè
-	@PostMapping(value = { "/get_friend_info/{id}" }, produces = "application/json")
-	public ResponseEntity<AjaxResponse> get_friend_info(@PathVariable("id") int id, final ModelMap model,
+	@PostMapping(value = { "/get_user_friends" }, produces = "application/json")
+	public ResponseEntity<AjaxResponse> get_friend_info(@RequestParam Integer user_id, final ModelMap model,
 			final HttpServletRequest request, final HttpServletResponse response) {
-		return ResponseEntity.ok(new AjaxResponse(1000, "OK", userService.findFriendInfo(id)));
+		String token = request.getHeader("Authorization");
+		String phone = userService.getPhoneNumberFromToken(token);
+		int id = userService.findUserByPhone(phone).getId();
+
+		if(user_id==null){    //Bỏ trống id
+//
+			return ResponseEntity.ok(new AjaxResponse(Response.CODE_1000, Response.MESSAGE_1000, userService.findFriendInfo(id)));
+		}else {							//Truyền vào id
+			User user = userService.findUserById(id);
+			if(user.getRoles().get(0).getId()!=1){           //Nếu không phải admin
+				if (user_id.compareTo(id)!=0) { //Truyền id của người khác
+					return ResponseEntity.ok(new AjaxResponse(Response.CODE_1004, Response.MESSAGE_1004));
+				}else {
+//
+					return ResponseEntity.ok(new AjaxResponse(Response.CODE_1000, Response.MESSAGE_1000, userService.findFriendInfo(user_id)));
+				}
+			}else{									//Nếu là admin
+//
+				return ResponseEntity.ok(new AjaxResponse(Response.CODE_1000, Response.MESSAGE_1000, userService.findFriendInfo(user_id)));
+			}
+		}
+
 	}
 
 	// Set_block_user
@@ -78,7 +97,7 @@ public class FriendController {
 		blockUser.setId_block_user(userService.findUserById(id_user_block));
 		blockUser.setId_block_user(userService.findUserById(id_block_user));
 		blockRepo.save(blockUser);
-		return ResponseEntity.ok(new AjaxResponse(1000, "Block Successfully!", blockUser));
+		return ResponseEntity.ok(new AjaxResponse(Response.CODE_1000, Response.MESSAGE_1000, blockUser));
 	}
 
 	// Gửi yêu cầu kết bạn
@@ -92,27 +111,27 @@ public class FriendController {
 		friendData.setUserBId(userService.findUserById(user_id));
 		friendData.setIsAccept(false);
 		userService.saveFriendRequest(friendData);
-		
+
 		return ResponseEntity.ok(new AjaxResponse(Response.CODE_1000, Response.MESSAGE_1000,userService.findFriendRequestByIdA(id).size()));
 	}
 
 
 	// Chấp nhận và hủy yêu cầu kết bạn
 	@RequestMapping(value = { "/set_accept_friend" }, method = RequestMethod.POST)
-	public ResponseEntity<AjaxResponse> set_accept_friend(@RequestParam Integer idA,@RequestParam Integer idB,@RequestParam Boolean isAccept,Friend friendData, final ModelMap model,
+	public ResponseEntity<AjaxResponse> set_accept_friend(@RequestParam int user_id,@RequestParam Boolean isAccept,Friend friendData, final ModelMap model,
 														   final HttpServletRequest request, final HttpServletResponse response) throws Exception {
+		String token = request.getHeader("Authorization");
+		String phone = userService.getPhoneNumberFromToken(token);
+		int id = userService.findUserByPhone(phone).getId();
 
-//		friendData.setUserAId(userService.findUserById(idA));
-//		friendData.setUserBId(userService.findUserById(idB));
-		friendData = userService.findFriendRequestById(idA, idB);
+		friendData = userService.findFriendRequestById(user_id, id);
 		friendData.setIsAccept(isAccept);
 		if(isAccept==false){
-		userService.deleteFriendRequest(idA, idB);
-		friendData = null;
+		userService.deleteFriendRequest(user_id, id);
 		}else{
 			userService.saveFriendRequest(friendData);
 		}
-		return ResponseEntity.ok(new AjaxResponse(1000, "OK",friendData));
+		return ResponseEntity.ok(new AjaxResponse(Response.CODE_1000, Response.MESSAGE_1000));
 	}
 
 	// bỏ block

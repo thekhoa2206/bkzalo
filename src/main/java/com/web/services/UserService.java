@@ -1,6 +1,7 @@
 package com.web.services;
 
 import java.security.Key;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -13,15 +14,13 @@ import javax.persistence.Query;
 import javax.transaction.Transactional;
 import javax.xml.bind.DatatypeConverter;
 
+import com.web.Response.UserResponse;
 import com.web.common.SearchSomethings;
-import com.web.entities.Friend;
+import com.web.entities.*;
 import com.web.repositories.FriendRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.web.entities.Post;
-import com.web.entities.Roles;
-import com.web.entities.User;
 import com.web.repositories.UserRepo;
 
 import io.jsonwebtoken.Claims;
@@ -154,10 +153,30 @@ public class UserService {
 		return query.getResultList();
 	}
 	// SearchByID and isRequest =1 => Tìm bạn của user
-	public List<Friend> findFriendInfo(final int id) {
-		String sql = "select * from tbl_friends where id_user_b = '" + id + "' and is_accept = true";
+	public List<UserResponse> findFriendInfo(final int id) {
+		String sql = "select * from tbl_friends where id_user_b = '" + id + "' or id_user_a = '" + id + "' and is_accept = true";
 		Query query = entityManager.createNativeQuery(sql, Friend.class);
-		return query.getResultList();
+		List<Friend> friends = query.getResultList();
+		List<User> results = new ArrayList<>();
+		for(Friend friend : friends){
+			if(friend.getUserAId().getId() == id){
+				results.add(friend.getUserBId());
+			}else if(friend.getUserBId().getId() == id){
+				results.add(friend.getUserAId());
+			}
+		}
+
+		return getListUserResponse(results);
+	}
+
+	//Convert User -> UserResponse
+	public List<UserResponse> getListUserResponse(List<User> list){
+		List<UserResponse> userResponses = new ArrayList<>();
+		for(User user : list){
+			UserResponse userResponse = new UserResponse(user.getId(),user.getName(),user.getAvatar());
+			userResponses.add(userResponse);
+		}
+		return userResponses;
 	}
 
 	@Transactional(rollbackOn = Exception.class)
