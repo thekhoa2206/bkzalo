@@ -62,7 +62,8 @@ public class FriendController {
 
 	// Xem danh sách bạn bè
 	@PostMapping(value = { "/get_user_friends" }, produces = "application/json")
-	public ResponseEntity<AjaxResponse> get_friend_info(@RequestParam Integer user_id, final ModelMap model,
+	public ResponseEntity<AjaxResponse> get_friend_info(@RequestParam Integer user_id,@RequestParam("index") int index,
+														@RequestParam("count") int count, final ModelMap model,
 			final HttpServletRequest request, final HttpServletResponse response) {
 		String token = request.getHeader("Authorization");
 		String phone = userService.getPhoneNumberFromToken(token);
@@ -70,7 +71,7 @@ public class FriendController {
 
 		if(user_id==null){    //Bỏ trống id
 //
-			return ResponseEntity.ok(new AjaxResponse(Response.CODE_1000, Response.MESSAGE_1000, userService.findFriendInfo(id)));
+			return ResponseEntity.ok(new AjaxResponse(Response.CODE_1000, Response.MESSAGE_1000, userService.count(userService.findFriendInfo(id),index,count)));
 		}else {							//Truyền vào id
 			User user = userService.findUserById(id);
 			if(user.getRoles().get(0).getId()!=1){           //Nếu không phải admin
@@ -78,11 +79,11 @@ public class FriendController {
 					return ResponseEntity.ok(new AjaxResponse(Response.CODE_1004, Response.MESSAGE_1004));
 				}else {
 //
-					return ResponseEntity.ok(new AjaxResponse(Response.CODE_1000, Response.MESSAGE_1000, userService.findFriendInfo(user_id)));
+					return ResponseEntity.ok(new AjaxResponse(Response.CODE_1000, Response.MESSAGE_1000, userService.count(userService.findFriendInfo(user_id),index,count)));
 				}
 			}else{									//Nếu là admin
 //
-				return ResponseEntity.ok(new AjaxResponse(Response.CODE_1000, Response.MESSAGE_1000, userService.findFriendInfo(user_id)));
+				return ResponseEntity.ok(new AjaxResponse(Response.CODE_1000, Response.MESSAGE_1000, userService.count(userService.findFriendInfo(user_id),index,count)));
 			}
 		}
 
@@ -135,5 +136,7 @@ public class FriendController {
 	}
 
 	// bỏ block
+
+
 
 }

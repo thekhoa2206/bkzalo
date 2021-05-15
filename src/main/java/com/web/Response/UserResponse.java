@@ -10,11 +10,18 @@ public class UserResponse{
 
     private String avatar;
 
+    private String created;
 
-    public UserResponse(int id, String name, String avatar){
+
+    public UserResponse(int id, String name, String avatar,String created){
         this.id = id;
         this.name = name;
         this.avatar = avatar;
+        this.created = created;
+    }
+
+    public UserResponse() {
+
     }
 
     public int getId() {
@@ -41,5 +48,11 @@ public class UserResponse{
         this.avatar = avatar;
     }
 
+    public String getCreated() {
+        return created;
+    }
 
+    public void setCreated(String created) {
+        this.created = created;
+    }
 }

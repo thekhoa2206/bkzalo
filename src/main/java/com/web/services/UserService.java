@@ -157,26 +157,58 @@ public class UserService {
 		String sql = "select * from tbl_friends where id_user_b = '" + id + "' or id_user_a = '" + id + "' and is_accept = true";
 		Query query = entityManager.createNativeQuery(sql, Friend.class);
 		List<Friend> friends = query.getResultList();
+		List<UserResponse> userResponses = new ArrayList<>();
 		List<User> results = new ArrayList<>();
+		List<String> created = new ArrayList<>();
 		for(Friend friend : friends){
-			if(friend.getUserAId().getId() == id){
+			if(friend.getUserAId().getId() == id && friend.getCreated() != null){
 				results.add(friend.getUserBId());
-			}else if(friend.getUserBId().getId() == id){
+				created.add(friend.getCreated());
+			}else if(friend.getUserBId().getId() == id && friend.getCreated() != null){
 				results.add(friend.getUserAId());
+				created.add(friend.getCreated());
 			}
 		}
 
-		return getListUserResponse(results);
+		userResponses = getListUserResponse(results,created);
+
+		return userResponses;
 	}
 
 	//Convert User -> UserResponse
-	public List<UserResponse> getListUserResponse(List<User> list){
+	public List<UserResponse> getListUserResponse(List<User> list,List<String> created){
 		List<UserResponse> userResponses = new ArrayList<>();
+		UserResponse userResponse = new UserResponse();
+		int i = 0;
 		for(User user : list){
-			UserResponse userResponse = new UserResponse(user.getId(),user.getName(),user.getAvatar());
+			userResponse = new UserResponse(user.getId(),user.getName(),user.getAvatar(),created.get(i));
+			i++;
 			userResponses.add(userResponse);
 		}
 		return userResponses;
+	}
+
+	public List<UserResponse> count(List<UserResponse> list, int index, int count) {
+
+		int lastId = 0;
+		List<UserResponse> data = new ArrayList<UserResponse>();
+//		List<Post> data = postRepo.findAll();
+
+			int last = index + count;
+			int a = 0;
+			if (list.size() < last) {
+				for (int i = index; i < list.size(); i++) {
+					data.add(list.get(i));
+				}
+			} else {
+				for (int i = index; i < last; i++) {
+					data.add(list.get(i));
+				}
+			}
+			lastId = data.get(data.size() - 1).getId();
+
+			return data;
+
 	}
 
 	@Transactional(rollbackOn = Exception.class)
