@@ -14,6 +14,8 @@ import javax.persistence.Query;
 import javax.transaction.Transactional;
 import javax.xml.bind.DatatypeConverter;
 
+import com.web.Response.GetListFriendResponse;
+import com.web.Response.ListFriendsResponse;
 import com.web.Response.UserResponse;
 import com.web.common.SearchSomethings;
 import com.web.entities.*;
@@ -153,13 +155,14 @@ public class UserService {
 		return query.getResultList();
 	}
 	// SearchByID and isRequest =1 => Tìm bạn của user
-	public List<UserResponse> findFriendInfo(final int id) {
+	public GetListFriendResponse findFriendInfo(final int id) {
 		String sql = "select * from tbl_friends where id_user_b = '" + id + "' or id_user_a = '" + id + "' and is_accept = true";
 		Query query = entityManager.createNativeQuery(sql, Friend.class);
 		List<Friend> friends = query.getResultList();
 		List<UserResponse> userResponses = new ArrayList<>();
 		List<User> results = new ArrayList<>();
 		List<String> created = new ArrayList<>();
+		GetListFriendResponse getListFriendResponse = new GetListFriendResponse();
 		for(Friend friend : friends){
 			if(friend.getUserAId().getId() == id && friend.getCreated() != null){
 				results.add(friend.getUserBId());
@@ -170,13 +173,15 @@ public class UserService {
 			}
 		}
 
-		userResponses = getListUserResponse(results,created);
+		getListFriendResponse = getListUserResponse(results,created);
 
-		return userResponses;
+		return getListFriendResponse;
 	}
 
 	//Convert User -> UserResponse
-	public List<UserResponse> getListUserResponse(List<User> list,List<String> created){
+	public GetListFriendResponse getListUserResponse(List<User> list, List<String> created){
+		GetListFriendResponse getListFriendResponse = new GetListFriendResponse();
+		ListFriendsResponse listFriendsResponse = new ListFriendsResponse();
 		List<UserResponse> userResponses = new ArrayList<>();
 		UserResponse userResponse = new UserResponse();
 		int i = 0;
@@ -185,7 +190,10 @@ public class UserService {
 			i++;
 			userResponses.add(userResponse);
 		}
-		return userResponses;
+		listFriendsResponse.setFriends(userResponses);
+		//listFriendsResponse.setTotal(userResponses.size());
+		getListFriendResponse.setData(listFriendsResponse);
+		return getListFriendResponse;
 	}
 
 	public List<UserResponse> count(List<UserResponse> list, int index, int count) {
@@ -205,7 +213,9 @@ public class UserService {
 					data.add(list.get(i));
 				}
 			}
-			lastId = data.get(data.size() - 1).getId();
+			if(data.size() > 0){
+				lastId = data.get(data.size() - 1).getId();
+			}
 
 			return data;
 

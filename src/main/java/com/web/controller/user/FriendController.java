@@ -3,7 +3,7 @@ package com.web.controller.user;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.web.Response.UserResponse;
+import com.web.Response.*;
 import com.web.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.web.Response.AjaxResponse;
 import com.web.common.SearchSomethings;
 import com.web.repositories.BlockRepo;
 import com.web.repositories.UserRepo;
@@ -36,7 +35,7 @@ public class FriendController {
 
 	// Lấy thông tin FriendRequest
 	@RequestMapping(value = { "/get_requested_friend" }, method = RequestMethod.POST)
-	public ResponseEntity<AjaxResponse> get_friend_request_info(@RequestParam Integer user_id,@RequestParam int index,@RequestParam int count, final ModelMap model,
+	public ResponseEntity<AjaxResponse> get_friend_request_info(@RequestParam Integer user_id, final ModelMap model,
 			final HttpServletRequest request, final HttpServletResponse response) {
 		String token = request.getHeader("Authorization");
 		String phone = userService.getPhoneNumberFromToken(token);
@@ -48,7 +47,7 @@ public class FriendController {
 			User user = userService.findUserById(id);
 			if(user.getRoles().get(0).getId()!=1){           //Nếu không phải admin
 				if (user_id.compareTo(id)!=0) { //Truyền id của người khác
-					return ResponseEntity.ok(new AjaxResponse(1004, "Parameter value is invalid"));
+					return ResponseEntity.ok(new AjaxResponse(Response.CODE_1004, Response.MESSAGE_1004));
 				}else {
 					return ResponseEntity.ok(new AjaxResponse(Response.CODE_1000, Response.MESSAGE_1000, userService.findFriendRequestByIdB(user_id)));
 				}
@@ -62,30 +61,57 @@ public class FriendController {
 
 	// Xem danh sách bạn bè
 	@PostMapping(value = { "/get_user_friends" }, produces = "application/json")
-	public ResponseEntity<AjaxResponse> get_friend_info(@RequestParam Integer user_id,@RequestParam("index") int index,
+	public ResponseEntity<GetListFriendResponse> get_friend_info(@RequestParam Integer user_id,@RequestParam("index") int index,
 														@RequestParam("count") int count, final ModelMap model,
 			final HttpServletRequest request, final HttpServletResponse response) {
 		String token = request.getHeader("Authorization");
 		String phone = userService.getPhoneNumberFromToken(token);
 		int id = userService.findUserByPhone(phone).getId();
+		GetListFriendResponse getListFriendResponse = new GetListFriendResponse();
+		ListFriendsResponse listFriendsResponse = new ListFriendsResponse();
+		List<UserResponse> userResponses = new ArrayList<>();
+		if(user_id != null){
+			User user = userService.findUserById(id);
+			if(user.getRoles().get(0).getId()!=1) {           //Nếu không phải admin
+				if (user_id.compareTo(id) != 0) { //Truyền id của người khác
+					getListFriendResponse.setCode(Response.CODE_1004);
+					getListFriendResponse.setMessage(Response.MESSAGE_1004);
+					getListFriendResponse.setData(null);
+					return ResponseEntity.ok(getListFriendResponse);
+				}else{
+					userResponses = userService.count(userService.findFriendInfo(user_id).getData().getFriends(),index,count);
+				}
+			}else{
+				userResponses = userService.count(userService.findFriendInfo(user_id).getData().getFriends(),index,count);
+			}
+		}else{
+			userResponses = userService.count(userService.findFriendInfo(id).getData().getFriends(),index,count);
+		}
+		listFriendsResponse.setFriends(userResponses);
+		listFriendsResponse.setTotal(userResponses.size());
+		getListFriendResponse.setData(listFriendsResponse);
+		getListFriendResponse.setCode(Response.CODE_1000);
+		getListFriendResponse.setMessage(Response.MESSAGE_1000);
+		return ResponseEntity.ok(getListFriendResponse);
 
-		if(user_id==null){    //Bỏ trống id
-//
-			return ResponseEntity.ok(new AjaxResponse(Response.CODE_1000, Response.MESSAGE_1000, userService.count(userService.findFriendInfo(id),index,count)));
+		/*if(user_id==null){    //Bỏ trống id
+			userResponses = userService.count(userService.findFriendInfo(id).getData().getFriends(),index,count);
 		}else {							//Truyền vào id
 			User user = userService.findUserById(id);
 			if(user.getRoles().get(0).getId()!=1){           //Nếu không phải admin
 				if (user_id.compareTo(id)!=0) { //Truyền id của người khác
-					return ResponseEntity.ok(new AjaxResponse(Response.CODE_1004, Response.MESSAGE_1004));
+					getListFriendResponse.setCode(Response.CODE_1004);
+					getListFriendResponse.setMessage(Response.MESSAGE_1004);
+					getListFriendResponse.setData(null);
+					return ResponseEntity.ok(getListFriendResponse);
 				}else {
-//
-					return ResponseEntity.ok(new AjaxResponse(Response.CODE_1000, Response.MESSAGE_1000, userService.count(userService.findFriendInfo(user_id),index,count)));
+					userResponses = userService.count(userService.findFriendInfo(id).getData().getFriends(),index,count);
 				}
 			}else{									//Nếu là admin
-//
-				return ResponseEntity.ok(new AjaxResponse(Response.CODE_1000, Response.MESSAGE_1000, userService.count(userService.findFriendInfo(user_id),index,count)));
+				userResponses = userService.count(userService.findFriendInfo(id).getData().getFriends(),index,count);
 			}
-		}
+
+		}*/
 
 	}
 
