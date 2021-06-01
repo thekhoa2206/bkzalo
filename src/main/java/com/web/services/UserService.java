@@ -14,9 +14,7 @@ import javax.persistence.Query;
 import javax.transaction.Transactional;
 import javax.xml.bind.DatatypeConverter;
 
-import com.web.Response.GetListFriendResponse;
-import com.web.Response.ListFriendsResponse;
-import com.web.Response.UserResponse;
+import com.web.Response.*;
 import com.web.common.SearchSomethings;
 import com.web.entities.*;
 import com.web.repositories.FriendRepo;
@@ -88,13 +86,35 @@ public class UserService {
 		return query.getResultList();
 	}
 
-	public List<Friend> findFriendRequestByIdB(final int id) {
+	/*public List<Friend> findFriendRequestByIdB(final int id) {
 
-		String sql = "select * from tbl_friends where id_user_b = '" + id
+		String sql = "select id_user_a from tbl_friends where id_user_b = '" + id
 				+ "' AND is_accept = '" + 0 + "' ";
 
 		Query query = entityManager.createNativeQuery(sql, Friend.class);
 		return query.getResultList();
+	}*/
+
+	public GetListFriendRequestResponse findFriendRequestByIdB(final int id) {
+
+		String sql = "select * from tbl_friends where id_user_b = '" + id
+				+ "' AND is_accept = '" + 0 + "' ";
+		Query query = entityManager.createNativeQuery(sql, Friend.class);
+
+		List<Friend> friends = query.getResultList();
+		List<User> results = new ArrayList<>();
+		List<String> created = new ArrayList<>();
+		GetListFriendRequestResponse getListFriendRequestResponse = new GetListFriendRequestResponse();
+		for(Friend friend : friends){
+				results.add(friend.getUserAId());
+				created.add(friend.getCreated());
+		}
+
+		getListFriendRequestResponse = getListUserRequestResponse(results,created);
+
+		return getListFriendRequestResponse;
+
+
 	}
 
 	public List<Friend> findFriendRequestByIdA(final int id) {
@@ -194,6 +214,24 @@ public class UserService {
 		//listFriendsResponse.setTotal(userResponses.size());
 		getListFriendResponse.setData(listFriendsResponse);
 		return getListFriendResponse;
+	}
+
+	//Convert User -> UserResponse (Request)
+	public GetListFriendRequestResponse getListUserRequestResponse(List<User> list, List<String> created){
+		GetListFriendRequestResponse getListFriendRequestResponse = new GetListFriendRequestResponse();
+		ListFriendRequestResponse listFriendRequestResponse = new ListFriendRequestResponse();
+		List<UserResponse> userResponses = new ArrayList<>();
+		UserResponse userResponse = new UserResponse();
+		int i = 0;
+		for(User user : list){
+			userResponse = new UserResponse(user.getId(),user.getName(),user.getAvatar(),created.get(i));
+			i++;
+			userResponses.add(userResponse);
+		}
+		listFriendRequestResponse.setFriends(userResponses);
+		//listFriendsResponse.setTotal(userResponses.size());
+		getListFriendRequestResponse.setData(listFriendRequestResponse);
+		return getListFriendRequestResponse;
 	}
 
 	public List<UserResponse> count(List<UserResponse> list, int index, int count) {

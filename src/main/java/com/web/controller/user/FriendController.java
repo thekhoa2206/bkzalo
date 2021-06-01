@@ -35,13 +35,44 @@ public class FriendController {
 
 	// Lấy thông tin FriendRequest
 	@RequestMapping(value = { "/get_requested_friend" }, method = RequestMethod.POST)
-	public ResponseEntity<AjaxResponse> get_friend_request_info(@RequestParam Integer user_id, final ModelMap model,
+	public ResponseEntity<GetListFriendRequestResponse> get_friend_request_info(@RequestParam Integer user_id,@RequestParam("index") int index,
+																@RequestParam("count") int count, final ModelMap model,
 			final HttpServletRequest request, final HttpServletResponse response) {
+
 		String token = request.getHeader("Authorization");
 		String phone = userService.getPhoneNumberFromToken(token);
 		int id = userService.findUserByPhone(phone).getId();
+		GetListFriendRequestResponse getListFriendRequestResponse = new GetListFriendRequestResponse();
+		ListFriendRequestResponse listFriendRequestResponse = new ListFriendRequestResponse();
+		List<UserResponse> userResponses = new ArrayList<>();
+		if(user_id != null){
+			User user = userService.findUserById(id);
+			if(user.getRoles().get(0).getId()!=1) {           //Nếu không phải admin
+				if (user_id.compareTo(id) != 0) { //Truyền id của người khác
+					getListFriendRequestResponse.setCode(Response.CODE_1004);
+					getListFriendRequestResponse.setMessage(Response.MESSAGE_1004);
+					getListFriendRequestResponse.setData(null);
+					return ResponseEntity.ok(getListFriendRequestResponse);
+				}else{
+					userResponses = userService.count(userService.findFriendRequestByIdB(user_id).getData().getFriends(),index,count);
+				}
+			}else{
+				userResponses = userService.count(userService.findFriendRequestByIdB(user_id).getData().getFriends(),index,count);
+			}
+		}else{
+			userResponses = userService.count(userService.findFriendRequestByIdB(id).getData().getFriends(),index,count);
+		}
+		listFriendRequestResponse.setFriends(userResponses);
+		getListFriendRequestResponse.setData(listFriendRequestResponse);
+		getListFriendRequestResponse.setCode(Response.CODE_1000);
+		getListFriendRequestResponse.setMessage(Response.MESSAGE_1000);
+		return ResponseEntity.ok(getListFriendRequestResponse);
 
-		if(user_id==null){    //Bỏ trống id
+
+
+
+
+		/*if(user_id==null){    //Bỏ trống id
 			return ResponseEntity.ok(new AjaxResponse(Response.CODE_1000, Response.MESSAGE_1000, userService.findFriendRequestByIdB(id)));
 		}else {							//Truyền vào id
 			User user = userService.findUserById(id);
@@ -55,7 +86,7 @@ public class FriendController {
 
 				return ResponseEntity.ok(new AjaxResponse(Response.CODE_1000, Response.MESSAGE_1000, userService.findFriendRequestByIdB(user_id)));
 			}
-		}
+		}*/
 
 	}
 
