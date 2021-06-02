@@ -160,28 +160,37 @@ public class FriendController {
 
 	// Gửi yêu cầu kết bạn
 	@RequestMapping(value = { "/set_request_friend" }, method = RequestMethod.POST)
-	public ResponseEntity<AjaxResponse> set_request_friend(@RequestParam int user_id,Friend friendData, final ModelMap model,
+	public ResponseEntity<GetRequestFriendResponse> set_request_friend(@RequestParam int user_id,Friend friendData, final ModelMap model,
 														   final HttpServletRequest request, final HttpServletResponse response) throws Exception {
 		String token = request.getHeader("Authorization");
 		String phone = userService.getPhoneNumberFromToken(token);
 		int id = userService.findUserByPhone(phone).getId();
+		GetRequestFriendResponse getRequestFriendResponse = new GetRequestFriendResponse();
+		RequestFriendResponse requestFriendResponse = new RequestFriendResponse();
 		friendData.setUserAId(userService.findUserById(id));
 		friendData.setUserBId(userService.findUserById(user_id));
 		friendData.setIsAccept(false);
 		userService.saveFriendRequest(friendData);
 
-		return ResponseEntity.ok(new AjaxResponse(Response.CODE_1000, Response.MESSAGE_1000,userService.findFriendRequestByIdA(id).size()));
+
+		requestFriendResponse.setRequested_friends(userService.findFriendRequestByIdA(id).size());
+		getRequestFriendResponse.setData(requestFriendResponse);
+		getRequestFriendResponse.setCode(Response.CODE_1000);
+		getRequestFriendResponse.setMessage(Response.MESSAGE_1000);
+		return ResponseEntity.ok(getRequestFriendResponse);
+
+
 	}
 
 
 	// Chấp nhận và hủy yêu cầu kết bạn
 	@RequestMapping(value = { "/set_accept_friend" }, method = RequestMethod.POST)
-	public ResponseEntity<AjaxResponse> set_accept_friend(@RequestParam int user_id,@RequestParam Boolean isAccept,Friend friendData, final ModelMap model,
+	public ResponseEntity<BaseResponse> set_accept_friend(@RequestParam int user_id,@RequestParam Boolean isAccept,Friend friendData, final ModelMap model,
 														   final HttpServletRequest request, final HttpServletResponse response) throws Exception {
 		String token = request.getHeader("Authorization");
 		String phone = userService.getPhoneNumberFromToken(token);
 		int id = userService.findUserByPhone(phone).getId();
-
+		BaseResponse baseResponse = new BaseResponse();
 		friendData = userService.findFriendRequestById(user_id, id);
 		friendData.setIsAccept(isAccept);
 		if(isAccept==false){
@@ -189,7 +198,9 @@ public class FriendController {
 		}else{
 			userService.saveFriendRequest(friendData);
 		}
-		return ResponseEntity.ok(new AjaxResponse(Response.CODE_1000, Response.MESSAGE_1000));
+		baseResponse.setCode(Response.CODE_1000);
+		baseResponse.setMessage(Response.MESSAGE_1000);
+		return ResponseEntity.ok(baseResponse);
 	}
 
 	// bỏ block
