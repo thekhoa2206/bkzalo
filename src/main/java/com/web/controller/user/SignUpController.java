@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.web.Response.AjaxResponse;
@@ -32,21 +33,25 @@ public class SignUpController extends BaseController {
 	RoleRepo roleRepo;
 
 	@PostMapping(value = { "/signup" }, produces = "application/json")
-	public ResponseEntity<AjaxResponse> signup(@RequestBody User data, final ModelMap model,
-			final HttpServletRequest request, final HttpServletResponse response) throws Exception {
+	public ResponseEntity<AjaxResponse> signup(@RequestParam String password, @RequestParam String phone,
+			final ModelMap model, final HttpServletRequest request, final HttpServletResponse response)
+			throws Exception {
 		List<User> users = userRepo.findAll();
 		String message = null;
-		if (data.getPhone() != null && data.getPassword() != null) {
-			if (data.getPhone() != data.getPassword()) {
+		if (phone != null && password != null) {
+			if (phone != password) {
 				for (User user : users) {
-					if (data.getPhone() == user.getPhone()) {
+					if (phone == user.getPhone()) {
 						return ResponseEntity.ok(new AjaxResponse(Response.CODE_9996, Response.MESSAGE_9996));
 					}
 				}
 
-				if (userService.getSpecialCharacterCount(data.getPassword()) == true) {
-					if (data.getPhone().length() == 10 && Character.toString(data.getPhone().charAt(0)).equals("0")) {
-						if (data.getPassword().length() >= 6 && data.getPassword().length() <= 10) {
+				if (userService.getSpecialCharacterCount(password) == true) {
+					if (phone.length() == 10 && Character.toString(phone.charAt(0)).equals("0")) {
+						if (password.length() >= 6 && password.length() <= 10) {
+							User data = new User();
+							data.setPhone(phone);
+							data.setPassword(password);
 							data.setRoles(userService.findRoleById(1));
 							userService.saveGuestUser(data);
 							return ResponseEntity.ok(new AjaxResponse(Response.CODE_1000, Response.MESSAGE_1000, data));

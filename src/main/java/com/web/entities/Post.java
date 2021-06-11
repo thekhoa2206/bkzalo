@@ -44,6 +44,10 @@ public class Post extends BaseEntity {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "post"/* tên property product trong class ProductImages */
 			, fetch = FetchType.LAZY, orphanRemoval = true)
 	private List<PostImages> image = new ArrayList<PostImages>();
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "post" /* tên property post trong class report */
+			, fetch = FetchType.LAZY)
+	private List<Report> report = new ArrayList<Report>();
 
 	@ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, mappedBy = "post")
 	private List<Comment> comment = new ArrayList<Comment>();
@@ -111,8 +115,5 @@ public class Post extends BaseEntity {
 	public void setState(boolean state) {
 		this.state = state;
 	}
-
-	
-	
 
 }

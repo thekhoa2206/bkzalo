@@ -1,11 +1,14 @@
 package com.web.controller.user;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.naming.java.javaURLContextFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.ModelMap;
@@ -16,11 +19,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.web.Response.AddPostResponse;
 import com.web.Response.AjaxResponse;
 import com.web.Response.PostResponse;
 import com.web.entities.Comment;
 import com.web.entities.Post;
 import com.web.entities.PostImages;
+import com.web.entities.Report;
 import com.web.entities.Response;
 import com.web.repositories.PostRepo;
 import com.web.services.PostService;
@@ -37,29 +42,44 @@ public class PutPostController extends BaseController {
 
 //	User đăng bài
 	@PostMapping(value = { "/add_post" }, produces = "application/json")
-	public ResponseEntity<AjaxResponse> add_post(@RequestBody Post postData, final ModelMap model,
+	public ResponseEntity<AjaxResponse> add_post(@RequestParam String token, @RequestParam String image,
+			@RequestParam String video, @RequestParam String described, final ModelMap model,
 			final HttpServletRequest request, final HttpServletResponse response) {
-		String token = request.getHeader("Authorization");
+
 		String phone = userService.getPhoneNumberFromToken(token);
+		Post data = new Post();
+		data.setContent(described);
+		data.setUser(userService.findUserByPhone(userService.getPhoneNumberFromToken(token)));
+		List<PostImages> images = new ArrayList<PostImages>();
+		PostImages image0 = new PostImages();
+		image0.setPath(image);
+		images.add(0, image0);
+		data.setImage(images);
+		data.setMedia(video);
 
 		if (phone != null) {
-			if (postService.countWords(postData.getContent()) <= 500) {
-				if ((postData.getImage() != null && postData.getMedia() == null)
-						|| (postData.getImage() == null && postData.getMedia() != null)) {
-					if (postData.getImage().size() <= 4) {
+			if (postService.countWords(data.getContent()) <= 500) {
+
+				if (data.getImage().isEmpty() == false && data.getMedia().length() != 0) {
+					return ResponseEntity.ok(new AjaxResponse(Response.CODE_1023, Response.MESSAGE_1023));
+				} else {
+					if (data.getImage().size() <= 4) {
 						Post post = new Post();
-						post.setImage(postData.getImage());
-						post.setContent(postData.getContent());
-						post.setMedia(postData.getMedia());
+						post.setImage(data.getImage());
+						post.setContent(data.getContent());
+						post.setMedia(data.getMedia());
 						post.setCreatedDate(java.time.LocalDateTime.now());
 						post.setUser(userService.findUserByPhone(phone));
 						postRepo.save(post);
-						return ResponseEntity.ok(new AjaxResponse(Response.CODE_1000, Response.MESSAGE_1000, postData));
+
+						String url = "http://localhost:8080/add_post/" + Integer.toString(post.getId());
+
+						AddPostResponse addPost = new AddPostResponse(Integer.toString(post.getId()), url);
+						return ResponseEntity.ok(new AjaxResponse(Response.CODE_1000, Response.MESSAGE_1000, addPost));
 					} else {
 						return ResponseEntity.ok(new AjaxResponse(Response.CODE_1008, Response.MESSAGE_1008));
 					}
-				} else {
-					return ResponseEntity.ok(new AjaxResponse(Response.CODE_1023, Response.MESSAGE_1023));
+
 				}
 
 			} else {
@@ -72,10 +92,9 @@ public class PutPostController extends BaseController {
 	}
 
 	// Tìm bài viết của user (riêng từng bài )
-	@GetMapping(value = { "/get_post/{id}" }, produces = "application/json")
-	public ResponseEntity<AjaxResponse> get_post(@PathVariable("id") int id, final ModelMap model,
+	@GetMapping(value = { "/get_post" }, produces = "application/json")
+	public ResponseEntity<AjaxResponse> get_post(@RequestParam String token, @RequestParam int id, final ModelMap model,
 			final HttpServletRequest request, final HttpServletResponse response) {
-		String token = request.getHeader("Authorization");
 		String phone = userService.getPhoneNumberFromToken(token);
 		int comment = 0;
 		List<Comment> comment1 = postService.findAllCommentByIdPost(id);
@@ -92,25 +111,25 @@ public class PutPostController extends BaseController {
 
 	// Xem tất cả bài viết của tất cả user
 	@GetMapping(value = { "/get_list_posts" }, produces = "application/json")
-	public ResponseEntity<AjaxResponse> get_list_posts(@RequestParam("index") int index,
-			@RequestParam("count") int count, final ModelMap model, final HttpServletRequest request,
-			final HttpServletResponse response) {
-		String token = request.getHeader("Authorization");
+	public ResponseEntity<AjaxResponse> get_list_posts(@RequestParam String token, @RequestParam String last_id,
+			@RequestParam String index, @RequestParam String count, final ModelMap model,
+			final HttpServletRequest request, final HttpServletResponse response) {
+
 		String phone = userService.getPhoneNumberFromToken(token);
 
 		int lastId = 0;
 		List<Post> postData = new ArrayList<Post>();
 		List<Post> data = postRepo.findAll();
-
+		int index1 = Integer.parseInt(index);
+		int count1 = Integer.parseInt(count);
 		if (phone != null) {
-			int last = index + count;
-			int a = 0;
+			int last = index1 + count1;
 			if (data.size() < last) {
-				for (int i = index; i < data.size(); i++) {
+				for (int i = index1; i < data.size(); i++) {
 					postData.add(data.get(i));
 				}
 			} else {
-				for (int i = index; i < last; i++) {
+				for (int i = index1; i < last; i++) {
 					postData.add(data.get(i));
 				}
 			}
@@ -123,10 +142,23 @@ public class PutPostController extends BaseController {
 	}
 
 	// Edit post -> Chưa làm được user nào xóa bài của user đấy -> thêm tbl-users.id
-	@PostMapping(value = { "/update_post_info/{id}" }, produces = "application/json")
-	public ResponseEntity<AjaxResponse> update_post_info(@PathVariable("id") int id, @RequestBody Post postData,
-			final ModelMap model, final HttpServletRequest request, final HttpServletResponse response) {
-		Post post = postService.findPostById(id);
+	@PostMapping(value = { "/edit_post" }, produces = "application/json")
+	public ResponseEntity<AjaxResponse> edit_post(@RequestParam String token, @RequestParam String id,
+			@RequestParam String described, @RequestParam String image, @RequestParam String image_del,
+			@RequestParam String image_sort, @RequestParam String video, final ModelMap model,
+			final HttpServletRequest request, final HttpServletResponse response) {
+		Post post = postService.findPostById(Integer.parseInt(id));
+		Post postData = new Post();
+		postData.setId(Integer.parseInt(id));
+		postData.setContent(described);
+		postData.setUser(userService.findUserByPhone(userService.getPhoneNumberFromToken(token)));
+		List<PostImages> images = new ArrayList<PostImages>();
+		PostImages image0 = new PostImages();
+		image0.setPath(image);
+		images.add(0, image0);
+		postData.setImage(images);
+		postData.setMedia(video);
+
 		// Không xóa thông tin xong DB
 		if (postData.getContent() != null) {
 			post.setContent(postData.getContent());
@@ -137,29 +169,49 @@ public class PutPostController extends BaseController {
 		if (postData.getUser() != null) {
 			post.setUser(postData.getUser());
 		}
+		post.setCreatedDate(java.time.LocalDateTime.now());
 		// Không xóa thông tin xong DB
 		try {
 			postService.savePost(post);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return ResponseEntity.ok(new AjaxResponse(200, "update successfully", postData));
+		return ResponseEntity.ok(new AjaxResponse(Response.CODE_1000, Response.MESSAGE_1000));
 	}
 
-	// Xóa bài viết -> Nhưng chưa làm đc của user nào xóa bài của user đấy -> Lấy cả
 	// tbl-posts.id và tbl-user.id
-	@GetMapping(value = { "/delete_user_post/user/{id}" }, produces = "application/json")
-	public ResponseEntity<AjaxResponse> delete_post_user(@PathVariable("id") int id, final ModelMap model,
+	@PostMapping(value = { "/delete_post" }, produces = "application/json")
+	public ResponseEntity<AjaxResponse> delete_post(@RequestParam String token, @RequestParam int id, final ModelMap model,
 			final HttpServletRequest request, final HttpServletResponse response) {
-		postService.deletePostById(id);
-		return ResponseEntity.ok(new AjaxResponse(200, "OK"));
+		if(postService.findPostbyIdAndUserId(id, userService.findUserByPhone(userService.getPhoneNumberFromToken(token)).getId()) != null) {
+			postService.deletePostById(id,userService.findUserByPhone(userService.getPhoneNumberFromToken(token)).getId());
+			return ResponseEntity.ok(new AjaxResponse(Response.CODE_1000, Response.MESSAGE_1000));
+		}
+		return ResponseEntity.ok(new AjaxResponse(Response.CODE_1025, Response.MESSAGE_1025));
 	}
 
 	// Báo cáo bài viết
-	@GetMapping(value = { "/report/user/{id}" }, produces = "application/json")
-	public ResponseEntity<AjaxResponse> report(@PathVariable("id") int id, final ModelMap model,
+	@PostMapping(value = { "/report" }, produces = "application/json")
+	public ResponseEntity<AjaxResponse> report(@RequestParam String token, @RequestParam int id,
+			@RequestParam String subject, @RequestParam String details, final ModelMap model,
 			final HttpServletRequest request, final HttpServletResponse response) {
-		return ResponseEntity.ok(new AjaxResponse(200, "OK"));
+
+		if (postService.findPostById(id).getState() == true) {
+			Report report = new Report();
+			report.setUser(userService.findUserByPhone(userService.getPhoneNumberFromToken(token)));
+			report.setPost(postService.findPostById(id));
+			report.setDetails(details);
+			report.setSubject(subject);
+			try {
+				postService.saveReport(report);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return ResponseEntity.ok(new AjaxResponse(Response.CODE_1000, Response.MESSAGE_1000));
+		} else {
+			return ResponseEntity.ok(new AjaxResponse(Response.CODE_1024, Response.MESSAGE_1024));
+		}
+
 	}
 
 }

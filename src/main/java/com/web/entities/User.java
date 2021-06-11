@@ -37,7 +37,11 @@ public class User extends BaseEntity {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user" /* tên property user trong class posts */
 			, fetch = FetchType.LAZY)
 	private List<Post> post = new ArrayList<Post>();
-
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user" /* tên property user trong class posts */
+			, fetch = FetchType.LAZY)
+	private List<Report> report = new ArrayList<Report>();
+	
 	// 1 user -> N commments
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user" /* tên property user trong class comment */
 			, fetch = FetchType.LAZY)

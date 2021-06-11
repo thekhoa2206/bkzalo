@@ -43,8 +43,8 @@ public class CommentService {
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public void deleteComment(int idComment) {
-		String sql = "delete from tbl_comment where id = '" + idComment + "'";
+	public void deleteComment(int id) {
+		String sql = "delete from tbl_comment where id = '" + id + "'";
 		Query query = entityManager.createNativeQuery(sql);
 		query.executeUpdate();
 	}

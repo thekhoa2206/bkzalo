@@ -12,10 +12,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import com.web.common.SearchSomethings;
+import com.web.entities.ChatMessage;
 import com.web.entities.Comment;
 import com.web.entities.Post;
+import com.web.entities.Report;
 import com.web.entities.User;
 import com.web.repositories.PostRepo;
+import com.web.repositories.ReportRepo;
 
 @Service
 public class PostService {
@@ -27,6 +30,8 @@ public class PostService {
 	public PostRepo postRepo;
 	@PersistenceContext
 	protected EntityManager entityManager;
+	@Autowired
+	ReportRepo reportRepo;
 
 	public Post findPostById(final int id) {
 		String sql = "select * from tbl_posts where id = '" + id + "'";
@@ -39,9 +44,9 @@ public class PostService {
 		Query query = entityManager.createNativeQuery(sql, Post.class);
 		return query.getResultList();
 	}
-	
+
 	public List<Post> findAllPostUserId(final int id) {
-		String sql = "select * from tbl_posts where user_id ='"+ id +"'";
+		String sql = "select * from tbl_posts where user_id ='" + id + "'";
 		Query query = entityManager.createNativeQuery(sql, Post.class);
 		return query.getResultList();
 	}
@@ -52,31 +57,43 @@ public class PostService {
 		Query query = entityManager.createNativeQuery(sql, Comment.class);
 		return query.getResultList();
 	}
-
-	public void deletePostById(@PathVariable int id) {
-		postRepo.deleteById(id);
+	public Post findPostbyIdAndUserId(final int id,final int user_id) {
+		String sql = "select * from tbl_posts where id = '" + id + "' AND user_id = '"+user_id +"'";
+		Query query = entityManager.createNativeQuery(sql, Post.class);
+		return (Post) query.getSingleResult();
+	}
+	@Transactional(rollbackOn = Exception.class)
+	public void deletePostById(final int id, final int user_id) {
+		String sql = "delete from tbl_posts where user_id = '" + user_id + "' AND id = '" + id + "'";
+		Query query = entityManager.createNativeQuery(sql);
+		query.executeUpdate();
 	}
 
-//	seachPost
-	@SuppressWarnings("unchecked")
-	public List<Post> search(final SearchSomethings searchSomethings) {
 
-		String jpql = "Select p from Post p where CONCAT(p.content,' ', p.media) LIKE '%"
-				+ searchSomethings.getKeyword() + "%'";
-		Query query = entityManager.createQuery(jpql, Post.class);
+	@SuppressWarnings("unchecked")
+	public List<Post> search(final String keyword) {
+
+		String sql = "Select p from Post p  where CONCAT(p.content,' ', p.media) LIKE '%"
+				+ keyword + "%'";
+		Query query = entityManager.createQuery(sql, Post.class);
 		return query.getResultList();
 	}
-
-//	searchUser
 	@SuppressWarnings("unchecked")
-	public List<User> searchUser(final SearchSomethings searchSomethings) {
+	public List<User> searchUser(final String keyword) {
 
-		String jpql = "Select p from User p where CONCAT(p.phone,' ', p.name) LIKE '%" + searchSomethings.getKeyword()
-				+ "%'";
-		Query query = entityManager.createQuery(jpql, User.class);
+		String sql = "Select u from User u  where CONCAT(u.name,' ', u.phone) LIKE '%"
+				+ keyword + "%'";
+		Query query = entityManager.createQuery(sql, User.class);
 		return query.getResultList();
 	}
+	@SuppressWarnings("unchecked")
+	public List<ChatMessage> searchUserChat(final String keyword) {
 
+		String sql = "Select c from ChatMessage c  where CONCAT(c.content,' ') LIKE '%"
+				+ keyword + "%'";
+		Query query = entityManager.createQuery(sql, ChatMessage.class);
+		return query.getResultList();
+	}
 	@Transactional(rollbackOn = Exception.class)
 	public void savePost(Post post) throws Exception {
 		try {
@@ -86,6 +103,20 @@ public class PostService {
 
 			}
 			postRepo.save(post);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	@Transactional(rollbackOn = Exception.class)
+	public void saveReport(Report report) throws Exception {
+		try {
+			if (report.getId() != null) { // chỉnh sửa
+				// lấy dữ liệu cũ của sản phẩm
+				Report reportInDb = reportRepo.findById(report.getId()).get();
+
+			}
+			reportRepo.save(report);
 		} catch (Exception e) {
 			throw e;
 		}

@@ -100,6 +100,12 @@ public class Response {
 	public static final String MESSAGE_1023 = "Posts are only images or video";
 	public static final int CODE_1023= 1023;
 	
+	public static final String MESSAGE_1024 = "This post has been locked ";
+	public static final int CODE_1024= 1024;
+	
+	public static final String MESSAGE_1025 = "Không thể xóa bài viết";
+	public static final int CODE_1025= 1025;
+	
 	
 	
 
