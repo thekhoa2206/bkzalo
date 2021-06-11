@@ -22,6 +22,7 @@ import com.web.repositories.UserRepo;
 import com.web.services.UserService;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -49,10 +50,11 @@ public class FriendController {
 			User user = userService.findUserById(id);
 			if(user.getRoles().get(0).getId()!=1) {           //Nếu không phải admin
 				if (user_id.compareTo(id) != 0) { //Truyền id của người khác
-					getListFriendRequestResponse.setCode(Response.CODE_1004);
-					getListFriendRequestResponse.setMessage(Response.MESSAGE_1004);
-					getListFriendRequestResponse.setData(null);
-					return ResponseEntity.ok(getListFriendRequestResponse);
+					userResponses = userService.count(userService.findFriendRequestByIdB(id).getData().getFriends(),index,count);
+//					getListFriendRequestResponse.setCode(Response.CODE_1004);
+//					getListFriendRequestResponse.setMessage(Response.MESSAGE_1004);
+//					getListFriendRequestResponse.setData(null);
+//					return ResponseEntity.ok(getListFriendRequestResponse);
 				}else{
 					userResponses = userService.count(userService.findFriendRequestByIdB(user_id).getData().getFriends(),index,count);
 				}
@@ -105,10 +107,11 @@ public class FriendController {
 			User user = userService.findUserById(id);
 			if(user.getRoles().get(0).getId()!=1) {           //Nếu không phải admin
 				if (user_id.compareTo(id) != 0) { //Truyền id của người khác
-					getListFriendResponse.setCode(Response.CODE_1004);
-					getListFriendResponse.setMessage(Response.MESSAGE_1004);
-					getListFriendResponse.setData(null);
-					return ResponseEntity.ok(getListFriendResponse);
+					userResponses = userService.count(userService.findFriendInfo(id).getData().getFriends(),index,count);
+//					getListFriendResponse.setCode(Response.CODE_1004);
+//					getListFriendResponse.setMessage(Response.MESSAGE_1004);
+//					getListFriendResponse.setData(null);
+//					return ResponseEntity.ok(getListFriendResponse);
 				}else{
 					userResponses = userService.count(userService.findFriendInfo(user_id).getData().getFriends(),index,count);
 				}
@@ -165,19 +168,29 @@ public class FriendController {
 		String token = request.getHeader("Authorization");
 		String phone = userService.getPhoneNumberFromToken(token);
 		int id = userService.findUserByPhone(phone).getId();
+		Long ts = System.currentTimeMillis()/1000;
 		GetRequestFriendResponse getRequestFriendResponse = new GetRequestFriendResponse();
 		RequestFriendResponse requestFriendResponse = new RequestFriendResponse();
-		friendData.setUserAId(userService.findUserById(id));
-		friendData.setUserBId(userService.findUserById(user_id));
-		friendData.setIsAccept(false);
-		userService.saveFriendRequest(friendData);
+
+		if(userService.findFriendRequestByIdCheck(id,user_id)==null){
+			friendData.setUserAId(userService.findUserById(id));
+			friendData.setUserBId(userService.findUserById(user_id));
+			friendData.setIsAccept(false);
+			friendData.setCreated(Long.toString(ts));
+			userService.saveFriendRequest(friendData);
 
 
-		requestFriendResponse.setRequested_friends(userService.findFriendRequestByIdA(id).size());
-		getRequestFriendResponse.setData(requestFriendResponse);
-		getRequestFriendResponse.setCode(Response.CODE_1000);
-		getRequestFriendResponse.setMessage(Response.MESSAGE_1000);
-		return ResponseEntity.ok(getRequestFriendResponse);
+			requestFriendResponse.setRequested_friends(userService.findFriendRequestByIdA(id).size());
+			getRequestFriendResponse.setData(requestFriendResponse);
+			getRequestFriendResponse.setCode(Response.CODE_1000);
+			getRequestFriendResponse.setMessage(Response.MESSAGE_1000);
+			return ResponseEntity.ok(getRequestFriendResponse);
+		}else {
+			getRequestFriendResponse.setData(null);
+			getRequestFriendResponse.setCode(Response.CODE_1004);
+			getRequestFriendResponse.setMessage(Response.MESSAGE_1004);
+			return ResponseEntity.ok(getRequestFriendResponse);
+		}
 
 
 	}
@@ -191,16 +204,27 @@ public class FriendController {
 		String phone = userService.getPhoneNumberFromToken(token);
 		int id = userService.findUserByPhone(phone).getId();
 		BaseResponse baseResponse = new BaseResponse();
-		friendData = userService.findFriendRequestById(user_id, id);
-		friendData.setIsAccept(isAccept);
-		if(isAccept==false){
-		userService.deleteFriendRequest(user_id, id);
+
+		if(userService.findFriendRequestById(user_id,id)!=null && ( isAccept==true || isAccept==false) ){
+			friendData = userService.findFriendRequestById(user_id, id);
+			friendData.setIsAccept(isAccept);
+
+			if(isAccept==false){
+				userService.deleteFriendRequest(user_id, id);
+			}else{
+				Long ts = System.currentTimeMillis()/1000;
+				friendData.setCreated(Long.toString(ts));
+				userService.saveFriendRequest(friendData);
+			}
+			baseResponse.setCode(Response.CODE_1000);
+			baseResponse.setMessage(Response.MESSAGE_1000);
+			return ResponseEntity.ok(baseResponse);
 		}else{
-			userService.saveFriendRequest(friendData);
+			baseResponse.setCode(Response.CODE_1004);
+			baseResponse.setMessage(Response.MESSAGE_1004);
+			return ResponseEntity.ok(baseResponse);
 		}
-		baseResponse.setCode(Response.CODE_1000);
-		baseResponse.setMessage(Response.MESSAGE_1000);
-		return ResponseEntity.ok(baseResponse);
+
 	}
 
 	// bỏ block

@@ -135,6 +135,16 @@ public class UserService {
 		return (Friend) query.getSingleResult();
 	}
 
+	public Friend findFriendRequestByIdCheck(final Integer idA, final Integer idB) {
+
+		String sql = "select * from tbl_friends where id_user_b = '" + idB
+				+ "' AND id_user_a = '" + idA + "' ";
+
+		Query query = entityManager.createNativeQuery(sql, Friend.class);
+		return (Friend) query.getSingleResult();
+	}
+
+
 	//Gửi yêu cầu và chấp nhận lời mời kết bạn
 	@Transactional(rollbackOn = Exception.class)
 	public void saveFriendRequest(Friend friendData) throws Exception {
