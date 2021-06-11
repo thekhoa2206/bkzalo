@@ -20,12 +20,13 @@ import com.web.services.UserService;
 import org.springframework.http.ResponseEntity;
 
 
-@WebFilter(urlPatterns = { "/logout", "/add_post", "/set_comment","/edit_comment","/del_comment", "/get_post", "/blocks", "/like",
-        "/delete_post", "/get_comment", "/get_list_posts", "/report", "/set_accept_friend",
+@WebFilter(urlPatterns = { "/logout", "/get_comment","/set_comment","/del_comment","/edit_comment","/like",
 
-        "/set_request_friend", "/get_user_infor","/change_password",
+        "/report","/add_post","/get_post","/get_list_post","/edit_post","/delete_post",
 
-        "/set_request_friend", "/get_user_info", "/set_request_friend" })
+        "/search","/change_password","/set_user_info","/get_user_friends",
+
+        "/set_request_friend", "/get_user_info", "get_requested_friend","set_accept_friend" })
 
     public class APIFilter implements Filter {
 
@@ -57,9 +58,16 @@ import org.springframework.http.ResponseEntity;
             System.out.println("url = " + url);
             try {
                 if (userService.validateToken(authToken) && userService.getPhoneNumberFromToken(authToken) != null) {
+
                     chain.doFilter(request, response);
+                }else{
+
+                    baseResponse.setCode(Response.CODE_1002);
+                    baseResponse.setMessage(Response.MESSAGE_1002);
+                    httpResponse.getWriter().print(gson.toJson(baseResponse));
                 }
             } catch (IllegalArgumentException e) {
+
                 if(authToken == "") {
                     System.out.println("Exception = "+e.getMessage());
                     baseResponse.setCode(Response.CODE_9998);

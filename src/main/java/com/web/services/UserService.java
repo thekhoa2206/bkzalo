@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 
 import javax.crypto.spec.SecretKeySpec;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
@@ -18,17 +19,11 @@ import com.web.Response.*;
 import com.web.common.SearchSomethings;
 import com.web.entities.*;
 import com.web.repositories.FriendRepo;
+import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.web.repositories.UserRepo;
-
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtBuilder;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureAlgorithm;
 
 @Service
 public class UserService {
@@ -141,7 +136,11 @@ public class UserService {
 				+ "' AND id_user_a = '" + idA + "' ";
 
 		Query query = entityManager.createNativeQuery(sql, Friend.class);
-		return (Friend) query.getSingleResult();
+		try {
+			return (Friend) query.getSingleResult();
+		}catch (NoResultException e){
+			return null;
+		}
 	}
 
 
@@ -286,7 +285,7 @@ public class UserService {
 
 			return claims.getIssuer();
 
-		} catch (ExpiredJwtException | IllegalArgumentException e) {
+		} catch (ExpiredJwtException | IllegalArgumentException | SignatureException e) {
 			return null;
 		}
 	}
@@ -298,8 +297,38 @@ public class UserService {
 		return (User) query.getSingleResult();
 	}
 
+
+
+//	@Override
+//	public String getMD5(String input) {
+//		try {
+//
+//			// Static getInstance method is called with hashing MD5
+//			MessageDigest md = MessageDigest.getInstance("MD5");
+//
+//			// digest() method is called to calculate message digest
+//			// of an input digest() return array of byte
+//			byte[] messageDigest = md.digest(input.getBytes());
+//
+//			// Convert byte array into signum representation
+//			BigInteger no = new BigInteger(1, messageDigest);
+//
+//			// Convert message digest into hex value
+//			String hashtext = no.toString(16);
+//			while (hashtext.length() < 32) {
+//				hashtext = "0" + hashtext;
+//			}
+//			return hashtext;
+//		}
+//
+//		// For specifying wrong message digest algorithms
+//		catch (NoSuchAlgorithmException e) {
+//			throw new RuntimeException(e);
+//		}
+//	}
+
+
 	public String createJWT(String issuer) {
-		String UUID = findUserByPhone(issuer).getName();
 		// The JWT signature algorithm we will be using to sign the token
 		SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
@@ -312,7 +341,7 @@ public class UserService {
 
 		// Let's set the JWT Claims
 
-		JwtBuilder builder = Jwts.builder().setIssuedAt(now).setIssuer(issuer).setAudience(UUID)
+		JwtBuilder builder = Jwts.builder().setIssuedAt(now).setIssuer(issuer).setAudience("")
 				.signWith(signatureAlgorithm, signingKey);
 
 		// if it has been specified, let's add the expiration
@@ -325,6 +354,7 @@ public class UserService {
 		// Builds the JWT and serializes it to a compact, URL-safe string
 		return builder.compact();
 	}
+
 
 	public boolean validateToken(String jwt) {
 		// This line will throw an exception if it is not a signed JWS (as expected)
@@ -341,6 +371,9 @@ public class UserService {
 		}
 		return false;
 	}
+
+
+
 	
 	// kiểm tra kí tự đặc biệt
 	public boolean getSpecialCharacterCount(String s) {

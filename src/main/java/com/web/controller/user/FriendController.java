@@ -172,7 +172,7 @@ public class FriendController {
 		GetRequestFriendResponse getRequestFriendResponse = new GetRequestFriendResponse();
 		RequestFriendResponse requestFriendResponse = new RequestFriendResponse();
 
-		if(userService.findFriendRequestByIdCheck(id,user_id)==null){
+		if(userService.findFriendRequestByIdCheck(id,user_id)==null && id!=user_id ){
 			friendData.setUserAId(userService.findUserById(id));
 			friendData.setUserBId(userService.findUserById(user_id));
 			friendData.setIsAccept(false);

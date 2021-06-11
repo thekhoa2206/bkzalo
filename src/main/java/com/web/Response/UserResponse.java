@@ -4,16 +4,16 @@ public class UserResponse{
 
     private int id;
 
-    private String name;
+    private String username;
 
     private String avatar;
 
     private String created;
 
 
-    public UserResponse(int id, String name, String avatar,String created){
+    public UserResponse(int id, String username, String avatar,String created){
         this.id = id;
-        this.name = name;
+        this.username = username;
         this.avatar = avatar;
         this.created = created;
     }
@@ -30,12 +30,12 @@ public class UserResponse{
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getUsername() {
+        return username;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getAvatar() {
