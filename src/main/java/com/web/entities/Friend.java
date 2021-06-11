@@ -17,6 +17,9 @@ public class Friend extends BaseEntity {
 	@JoinColumn(name = "id_user_b")
 	private User userBId;
 
+	@Column(name = "created", nullable = true)
+	private String created;
+
 	public boolean getIsAccept() {
 		return isAccept;
 	}
@@ -41,5 +44,11 @@ public class Friend extends BaseEntity {
 		this.userBId = userBId;
 	}
 
+	public String getCreated() {
+		return created;
+	}
 
+	public void setCreated(String created) {
+		this.created = created;
+	}
 }

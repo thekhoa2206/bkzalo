@@ -1,6 +1,7 @@
 package com.web.services;
 
 import java.security.Key;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -13,15 +14,13 @@ import javax.persistence.Query;
 import javax.transaction.Transactional;
 import javax.xml.bind.DatatypeConverter;
 
+import com.web.Response.*;
 import com.web.common.SearchSomethings;
-import com.web.entities.Friend;
+import com.web.entities.*;
 import com.web.repositories.FriendRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.web.entities.Post;
-import com.web.entities.Roles;
-import com.web.entities.User;
 import com.web.repositories.UserRepo;
 
 import io.jsonwebtoken.Claims;
@@ -87,13 +86,35 @@ public class UserService {
 		return query.getResultList();
 	}
 
-	public List<Friend> findFriendRequestByIdB(final int id) {
+	/*public List<Friend> findFriendRequestByIdB(final int id) {
 
-		String sql = "select * from tbl_friends where id_user_b = '" + id
+		String sql = "select id_user_a from tbl_friends where id_user_b = '" + id
 				+ "' AND is_accept = '" + 0 + "' ";
 
 		Query query = entityManager.createNativeQuery(sql, Friend.class);
 		return query.getResultList();
+	}*/
+
+	public GetListFriendRequestResponse findFriendRequestByIdB(final int id) {
+
+		String sql = "select * from tbl_friends where id_user_b = '" + id
+				+ "' AND is_accept = '" + 0 + "' ";
+		Query query = entityManager.createNativeQuery(sql, Friend.class);
+
+		List<Friend> friends = query.getResultList();
+		List<User> results = new ArrayList<>();
+		List<String> created = new ArrayList<>();
+		GetListFriendRequestResponse getListFriendRequestResponse = new GetListFriendRequestResponse();
+		for(Friend friend : friends){
+				results.add(friend.getUserAId());
+				created.add(friend.getCreated());
+		}
+
+		getListFriendRequestResponse = getListUserRequestResponse(results,created);
+
+		return getListFriendRequestResponse;
+
+
 	}
 
 	public List<Friend> findFriendRequestByIdA(final int id) {
@@ -113,6 +134,16 @@ public class UserService {
 		Query query = entityManager.createNativeQuery(sql, Friend.class);
 		return (Friend) query.getSingleResult();
 	}
+
+	public Friend findFriendRequestByIdCheck(final Integer idA, final Integer idB) {
+
+		String sql = "select * from tbl_friends where id_user_b = '" + idB
+				+ "' AND id_user_a = '" + idA + "' ";
+
+		Query query = entityManager.createNativeQuery(sql, Friend.class);
+		return (Friend) query.getSingleResult();
+	}
+
 
 	//Gửi yêu cầu và chấp nhận lời mời kết bạn
 	@Transactional(rollbackOn = Exception.class)
@@ -154,10 +185,88 @@ public class UserService {
 		return query.getResultList();
 	}
 	// SearchByID and isRequest =1 => Tìm bạn của user
-	public List<Friend> findFriendInfo(final int id) {
-		String sql = "select * from tbl_friends where id_user_b = '" + id + "' and is_accept = true";
+	public GetListFriendResponse findFriendInfo(final int id) {
+		String sql = "select * from tbl_friends where id_user_b = '" + id + "' or id_user_a = '" + id + "' and is_accept = true";
 		Query query = entityManager.createNativeQuery(sql, Friend.class);
-		return query.getResultList();
+		List<Friend> friends = query.getResultList();
+		List<UserResponse> userResponses = new ArrayList<>();
+		List<User> results = new ArrayList<>();
+		List<String> created = new ArrayList<>();
+		GetListFriendResponse getListFriendResponse = new GetListFriendResponse();
+		for(Friend friend : friends){
+			if(friend.getUserAId().getId() == id && friend.getCreated() != null){
+				results.add(friend.getUserBId());
+				created.add(friend.getCreated());
+			}else if(friend.getUserBId().getId() == id && friend.getCreated() != null){
+				results.add(friend.getUserAId());
+				created.add(friend.getCreated());
+			}
+		}
+
+		getListFriendResponse = getListUserResponse(results,created);
+
+		return getListFriendResponse;
+	}
+
+	//Convert User -> UserResponse
+	public GetListFriendResponse getListUserResponse(List<User> list, List<String> created){
+		GetListFriendResponse getListFriendResponse = new GetListFriendResponse();
+		ListFriendsResponse listFriendsResponse = new ListFriendsResponse();
+		List<UserResponse> userResponses = new ArrayList<>();
+		UserResponse userResponse = new UserResponse();
+		int i = 0;
+		for(User user : list){
+			userResponse = new UserResponse(user.getId(),user.getName(),user.getAvatar(),created.get(i));
+			i++;
+			userResponses.add(userResponse);
+		}
+		listFriendsResponse.setFriends(userResponses);
+		//listFriendsResponse.setTotal(userResponses.size());
+		getListFriendResponse.setData(listFriendsResponse);
+		return getListFriendResponse;
+	}
+
+	//Convert User -> UserResponse (Request)
+	public GetListFriendRequestResponse getListUserRequestResponse(List<User> list, List<String> created){
+		GetListFriendRequestResponse getListFriendRequestResponse = new GetListFriendRequestResponse();
+		ListFriendRequestResponse listFriendRequestResponse = new ListFriendRequestResponse();
+		List<UserResponse> userResponses = new ArrayList<>();
+		UserResponse userResponse = new UserResponse();
+		int i = 0;
+		for(User user : list){
+			userResponse = new UserResponse(user.getId(),user.getName(),user.getAvatar(),created.get(i));
+			i++;
+			userResponses.add(userResponse);
+		}
+		listFriendRequestResponse.setFriends(userResponses);
+		//listFriendsResponse.setTotal(userResponses.size());
+		getListFriendRequestResponse.setData(listFriendRequestResponse);
+		return getListFriendRequestResponse;
+	}
+
+	public List<UserResponse> count(List<UserResponse> list, int index, int count) {
+
+		int lastId = 0;
+		List<UserResponse> data = new ArrayList<UserResponse>();
+//		List<Post> data = postRepo.findAll();
+
+			int last = index + count;
+			int a = 0;
+			if (list.size() < last) {
+				for (int i = index; i < list.size(); i++) {
+					data.add(list.get(i));
+				}
+			} else {
+				for (int i = index; i < last; i++) {
+					data.add(list.get(i));
+				}
+			}
+			if(data.size() > 0){
+				lastId = data.get(data.size() - 1).getId();
+			}
+
+			return data;
+
 	}
 
 	@Transactional(rollbackOn = Exception.class)
