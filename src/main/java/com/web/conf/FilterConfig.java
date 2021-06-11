@@ -1,3 +1,4 @@
+/*
 package com.web.conf;
 
 import com.web.filter.APIFilter;
@@ -22,3 +23,4 @@ public class FilterConfig {
         return registrationBean;
     }
 }
+*/
