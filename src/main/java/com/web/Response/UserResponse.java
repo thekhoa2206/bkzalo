@@ -1,31 +1,5 @@
 package com.web.Response;
 
-<<<<<<< HEAD
-public class UserResponse {
-	private String name;
-	private String avatar;
-	
-	
-	public UserResponse(String name, String avatar) {
-		this.name = name;
-		this.avatar = avatar;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public String getAvatar() {
-		return avatar;
-	}
-	public void setAvatar(String avatar) {
-		this.avatar = avatar;
-	}
-	
-=======
-import com.web.entities.User;
-
 public class UserResponse{
 
     private int id;
@@ -79,5 +53,5 @@ public class UserResponse{
     public void setCreated(String created) {
         this.created = created;
     }
->>>>>>> f3f9e3f0fb5238433cbb4d267392bebb8a99fff3
+
 }

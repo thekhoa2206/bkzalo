@@ -12,15 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-<<<<<<< HEAD
 import com.web.Response.AjaxResponse;
 import com.web.Response.LoginResponse;
 import com.web.entities.Response;
-=======
-
-import com.web.Response.AjaxResponse;
-
->>>>>>> f3f9e3f0fb5238433cbb4d267392bebb8a99fff3
 import com.web.entities.User;
 import com.web.services.UserService;
 
