@@ -22,13 +22,11 @@ import com.web.services.UserService;
 public class LoginController {
 	@Autowired
 	UserService userService;
-
 //login
 	@PostMapping(value = { "/login" }, produces = "application/json")
 	public ResponseEntity<AjaxResponse> login(@RequestParam String phone, @RequestParam String password,
 			final ModelMap model, final HttpServletRequest request, final HttpServletResponse response)
 			throws Exception {
-
 		if (phone != null && password != null) {
 			if (phone != null) {
 				if (password != null) {
@@ -39,10 +37,8 @@ public class LoginController {
 								if (password.compareTo(userService.findUserByPhone(phone).getPassword()) == 0) {
 									User data = userService.findUserByPhone(phone);
 									data.setToken(userService.createJWT(data.getPhone()));
-
 									LoginResponse dataLogin = new LoginResponse(Integer.toString(data.getId()),
 											data.getPhone(), data.getToken(), data.getAvatar());
-
 									return ResponseEntity
 											.ok(new AjaxResponse(Response.CODE_1000, Response.MESSAGE_1000, dataLogin));
 								} else {
@@ -52,11 +48,9 @@ public class LoginController {
 							} else {
 								return ResponseEntity.ok(new AjaxResponse(Response.CODE_9995, Response.MESSAGE_9995));
 							}
-
 						} else {
 							return ResponseEntity.ok(new AjaxResponse(Response.CODE_1019, Response.MESSAGE_1019));
 						}
-
 					} else {
 						return ResponseEntity.ok(new AjaxResponse(Response.CODE_1018, Response.MESSAGE_1018));
 					}
@@ -69,7 +63,6 @@ public class LoginController {
 		} else {
 			return ResponseEntity.ok(new AjaxResponse(Response.CODE_1018, Response.MESSAGE_1018));
 		}
-
 	}
 
 //logout
