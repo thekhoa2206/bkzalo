@@ -28,11 +28,10 @@ public class UserController extends BaseController {
 	public UserService userService;
 
 //Lấy thông tin User
-	@PostMapping(value = { "/get_user_info/{id}" }, produces = "application/json")
-	public ResponseEntity<AjaxResponse> get_user_info(@PathVariable("id") int id, @RequestBody User data,
+	@PostMapping(value = { "/get_user_info" }, produces = "application/json")
+	public ResponseEntity<AjaxResponse> get_user_info(@RequestParam String token,@RequestParam int user_id,
 			final ModelMap model, final HttpServletRequest request, final HttpServletResponse response) {
-		data = userService.findUserById(id);
-		String token = request.getHeader("Authorization");
+		User data = userService.findUserById(user_id);
 		String phone = userService.getPhoneNumberFromToken(token);
 		return ResponseEntity.ok(new AjaxResponse(1000, "OK", data));
 	}
