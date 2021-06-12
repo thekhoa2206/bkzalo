@@ -34,7 +34,7 @@ public class ChatController {
 				numNewMessage++;
 		}
 
-		return ResponseEntity.ok(new AjaxResponse(200, "OK!", data));
+		return ResponseEntity.ok(new AjaxResponse(1000, "OK!", data));
 	}
 
 	@PostMapping(value = { "/{user_id}/get_conversation/{user_partner_id}" }, produces = "application/json")
@@ -42,7 +42,7 @@ public class ChatController {
 			@PathVariable("user_partner_id") int partnerId, final ModelMap model, final HttpServletRequest request,
 			final HttpServletResponse response) {
 		List<ChatMessage> data = chatService.findChatByUserIdAndPartnerId(userId, partnerId);
-		return ResponseEntity.ok(new AjaxResponse(200, "OK!", data));
+		return ResponseEntity.ok(new AjaxResponse(1000, "OK!", data));
 	}
 
 	@PostMapping(value = { "/{user_id}/delete_message/{user_partner_id}" }, produces = "application/json")
@@ -51,7 +51,7 @@ public class ChatController {
 			final HttpServletRequest request, final HttpServletResponse response) {
 		chatService.deleteMessage(chat.getId(), userId);
 		ChatMessage data = null;
-		return ResponseEntity.ok(new AjaxResponse(200, "OK!", data));
+		return ResponseEntity.ok(new AjaxResponse(1000, "OK!", data));
 	}
 
 	@PostMapping(value = { "/{user_id}/delete_conversation/{user_partner_id}" }, produces = "application/json")
@@ -60,6 +60,6 @@ public class ChatController {
 			final HttpServletResponse response) {
 		chatService.deleteConversation(userId, partnerId);
 		ChatMessage data = null;
-		return ResponseEntity.ok(new AjaxResponse(200, "OK!", data));
+		return ResponseEntity.ok(new AjaxResponse(1000, "OK!", data));
 	}
 }
