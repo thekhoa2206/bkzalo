@@ -28,7 +28,7 @@ public class UserController extends BaseController {
 	public UserService userService;
 
 //Lấy thông tin User
-	@GetMapping(value = { "/get_user_info/{id}" }, produces = "application/json")
+	@PostMapping(value = { "/get_user_info/{id}" }, produces = "application/json")
 	public ResponseEntity<AjaxResponse> get_user_info(@PathVariable("id") int id, @RequestBody User data,
 			final ModelMap model, final HttpServletRequest request, final HttpServletResponse response) {
 		data = userService.findUserById(id);

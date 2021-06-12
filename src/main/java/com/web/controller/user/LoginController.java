@@ -66,7 +66,7 @@ public class LoginController {
 	}
 
 //logout
-	@GetMapping(value = { "/logout" }, produces = "application/json")
+	@PostMapping(value = { "/logout" }, produces = "application/json")
 	public ResponseEntity<AjaxResponse> logout(@RequestBody User data, final ModelMap model,
 			final HttpServletRequest request, final HttpServletResponse response) throws Exception {
 		data = null;

@@ -52,11 +52,15 @@ public class PutPostController extends BaseController {
 		data.setUser(userService.findUserByPhone(userService.getPhoneNumberFromToken(token)));
 		List<PostImages> images = new ArrayList<PostImages>();
 		PostImages image0 = new PostImages();
-		image0.setPath(image);
+		if (image != null && image.length() != 0) {
+			image0.setPath(image);
+			data.setMedia(video);
+		} else {
+			image0.setPath(null);
+			data.setMedia(null);
+		}
 		images.add(0, image0);
 		data.setImage(images);
-		data.setMedia(video);
-
 		if (phone != null) {
 			if (postService.countWords(data.getContent()) <= 500) {
 
@@ -92,7 +96,7 @@ public class PutPostController extends BaseController {
 	}
 
 	// Tìm bài viết của user (riêng từng bài )
-	@GetMapping(value = { "/get_post" }, produces = "application/json")
+	@PostMapping(value = { "/get_post" }, produces = "application/json")
 	public ResponseEntity<AjaxResponse> get_post(@RequestParam String token, @RequestParam int id, final ModelMap model,
 			final HttpServletRequest request, final HttpServletResponse response) {
 		String phone = userService.getPhoneNumberFromToken(token);
@@ -110,7 +114,7 @@ public class PutPostController extends BaseController {
 	}
 
 	// Xem tất cả bài viết của tất cả user
-	@GetMapping(value = { "/get_list_posts" }, produces = "application/json")
+	@PostMapping(value = { "/get_list_posts" }, produces = "application/json")
 	public ResponseEntity<AjaxResponse> get_list_posts(@RequestParam String token, @RequestParam String last_id,
 			@RequestParam String index, @RequestParam String count, final ModelMap model,
 			final HttpServletRequest request, final HttpServletResponse response) {
@@ -181,10 +185,12 @@ public class PutPostController extends BaseController {
 
 	// tbl-posts.id và tbl-user.id
 	@PostMapping(value = { "/delete_post" }, produces = "application/json")
-	public ResponseEntity<AjaxResponse> delete_post(@RequestParam String token, @RequestParam int id, final ModelMap model,
-			final HttpServletRequest request, final HttpServletResponse response) {
-		if(postService.findPostbyIdAndUserId(id, userService.findUserByPhone(userService.getPhoneNumberFromToken(token)).getId()) != null) {
-			postService.deletePostById(id,userService.findUserByPhone(userService.getPhoneNumberFromToken(token)).getId());
+	public ResponseEntity<AjaxResponse> delete_post(@RequestParam String token, @RequestParam int id,
+			final ModelMap model, final HttpServletRequest request, final HttpServletResponse response) {
+		if (postService.findPostbyIdAndUserId(id,
+				userService.findUserByPhone(userService.getPhoneNumberFromToken(token)).getId()) != null) {
+			postService.deletePostById(id,
+					userService.findUserByPhone(userService.getPhoneNumberFromToken(token)).getId());
 			return ResponseEntity.ok(new AjaxResponse(Response.CODE_1000, Response.MESSAGE_1000));
 		}
 		return ResponseEntity.ok(new AjaxResponse(Response.CODE_1025, Response.MESSAGE_1025));
